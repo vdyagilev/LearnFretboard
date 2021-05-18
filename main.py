@@ -144,6 +144,8 @@ if __name__ == "__main__":
 
     # init pygame
     pygame.init()
+    # change window title
+    pygame.display.set_caption('LearnFretboard')
 
     # init pygame related constants
 
