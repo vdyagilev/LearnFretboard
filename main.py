@@ -12,22 +12,22 @@ WINDOW_HEIGHT = 1000
 WHITE = (255,255,255)
 DARK_GREY = (100,100,100)
 LIGHT_GREY = (170,170,170)
-CLOUD_GREY = (235, 240, 241)
+VERY_DARK_GREY = (13, 13, 13)
 
 # colours for fretboard buttons
 COLORS = {
     "A": (226, 50, 51),
-    "As/Bf": DARK_GREY,
-    "B": (114, 43, 235),
-    "C": (198, 247, 253),
-    "Cs/Df": DARK_GREY, 
+    "As/Bf": (71, 104, 237),
+    "B": (186, 37, 245),
+    "C": (227, 227, 227),
+    "Cs/Df": (198, 247, 253), 
     "D": (69, 216, 85),
-    "Ds/Ef": DARK_GREY,
+    "Ds/Ef": (252, 230, 28),
     "E": (250, 135, 31),
     "F": (61, 60, 60),
-    "Fs/Gf": DARK_GREY, 
+    "Fs/Gf": (52, 0, 196),
     "G": (109, 65, 26),
-    "Gs/Af": DARK_GREY,
+    "Gs/Af": (150, 23, 36),
 }
 
 NOTE_NAMES = ["A", "As/Bf", "B", "C", "Cs/Df", "D", "Ds/Ef", "E", "F", "Fs/Gf", "G", "Gs/Af"]
@@ -161,7 +161,7 @@ if __name__ == "__main__":
 
     # rendering a text written in
     # this font
-    title = TITLE_FONT.render('Learn Fretboard Notes', True, DARK_GREY)
+    title = TITLE_FONT.render('Learn Fretboard Notes', True, VERY_DARK_GREY)
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -170,7 +170,7 @@ if __name__ == "__main__":
     while True:
 
         # fill screen with background colour
-        screen.fill(CLOUD_GREY)
+        screen.fill(VERY_DARK_GREY)
 
         # draw freboard skeleton image
         screen.blit(fretboard_image, (0, 0))
