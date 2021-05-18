@@ -12,6 +12,7 @@ WINDOW_HEIGHT = 1000
 WHITE = (255,255,255)
 DARK_GREY = (100,100,100)
 LIGHT_GREY = (170,170,170)
+CLOUD_GREY = (235, 240, 241)
 
 # colours for fretboard buttons
 COLORS = {
@@ -45,7 +46,7 @@ BUTTON_RADIUS = 28
 SAVED_DATA_FILE = "saved_data.pickle"
 
 # number of seconds to display correct answer
-DISPLAY_ANSWER_TIME = 1
+DISPLAY_ANSWER_TIME = 2 # seconds
 
 ################################################################################################
 
@@ -167,7 +168,7 @@ if __name__ == "__main__":
     while True:
 
         # fill screen with background colour
-        screen.fill(LIGHT_GREY)
+        screen.fill(CLOUD_GREY)
 
         # draw freboard skeleton image
         screen.blit(fretboard_image, (0, 0))
@@ -199,7 +200,6 @@ if __name__ == "__main__":
 
         # choose note for user to predict
         predict_note = choose_note(curr_stats, saved_data)
-        print(predict_note)
 
         # if we get a new note, record it into curr_stats note history
         if len(curr_stats["note_history"]) == curr_stats["num_correct"] + curr_stats["num_wrong"]:

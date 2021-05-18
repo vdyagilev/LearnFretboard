@@ -4,6 +4,12 @@ Learn Fretboard is a Python based game for memorizing notes on the fretboard. Co
 Feel free to update colors to your flavor. 
 Trains your least accurate notes first.
 
+## Screenshot
+
+Below is the default setup. Grey notes are exposed on a correct guess. All colours are mutable.
+
+![screenshot](screenshot.png)
+
 ## Installation
 
 Requires Python3 and Pygame
