@@ -13,6 +13,8 @@ WHITE = (255,255,255)
 DARK_GREY = (100,100,100)
 LIGHT_GREY = (170,170,170)
 VERY_DARK_GREY = (13, 13, 13)
+SUCCESS_GREEN = (0, 48, 18)
+FAILURE_RED = (71, 0, 15)
 
 # colours for fretboard buttons
 COLORS = {
@@ -60,7 +62,7 @@ class Note:
 
         # prediction accuracy
         self.num_correct = 0
-        self.num_wrong = 0
+        self.total_guesses = 0
 
         # pygame display details
         self.color = COLORS[name]
@@ -72,12 +74,12 @@ class Note:
     def get_accuracy(self) -> float:
         """Returns the prediction accuracy"""
         try:
-            return self.num_correct / self.num_wrong
+            return self.num_correct / self.total_guesses
             
         except ZeroDivisionError:
             if self.num_correct == 0:
                 return 0.0
-            if self.num_wrong == 0:
+            else:
                 return 1.0
 
     def __str__(self):
@@ -125,6 +127,10 @@ def choose_note(curr_stats, hist_stats):
 
     return random.choices(hist_stats, prob_dist, k=1)[0]
     
+def notes_equal(x, y) -> bool:
+    """Returns True if Note x and Note y share same position on the fretboard"""
+    return x.name == y.name and x.string_idx == y.string_idx and x.fret_idx == y.fret_idx
+
 # Run game
 if __name__ == "__main__":
     try:
@@ -229,31 +235,43 @@ if __name__ == "__main__":
                 butt_press_name = button_at_pos(mouse)
 
                 if butt_press_name != "":
-                    # record correct guess, reveal, and continue
+                    # record correct guess
                     if butt_press_name == predict_note.name:
                         # record current game stats
                         curr_stats["num_correct"] += 1
                         # record saved file data
                         for saved_note in saved_data:
-                            if saved_note.name == predict_note.name and saved_note.string_idx == predict_note.string_idx and saved_note.fret_idx == predict_note.fret_idx:
+                            if notes_equal(predict_note, saved_note):
                                 saved_note.num_correct += 1
+                                saved_note.total_guesses += 1
 
-                        # reveal, colour circle and draw text
-                        pygame.draw.circle(screen, predict_note.color, predict_note.screen_pos, NOTE_RADIUS)
-                        if "/" in predict_note.name:
-                            screen.blit(BUTTON_FONT.render(predict_note.name, True, WHITE), (predict_note.screen_pos[0]-18, predict_note.screen_pos[1]-7))
-                        else:
-                            screen.blit(BUTTON_FONT.render(predict_note.name, True, WHITE), (predict_note.screen_pos[0]-4, predict_note.screen_pos[1]-7))
-
-                        pygame.display.update()
-                        pygame.time.delay(1000 * DISPLAY_ANSWER_TIME)
-
-                    # record incorrect guess, reveal, and continue
+                        # create success text
+                        success_text = TITLE_FONT.render("CORRECT", True, SUCCESS_GREEN)
+                    
+                    # record incorrect guess
                     else:
                         curr_stats["num_wrong"] += 1
                         for saved_note in saved_data:
-                            if saved_note.name == predict_note.name and saved_note.string_idx == predict_note.string_idx and saved_note.fret_idx == predict_note.fret_idx:
-                                saved_note.num_wrong += 1
+                            if notes_equal(predict_note, saved_note):
+                                saved_note.total_guesses += 1
+                        
+                         # create failure text
+                        success_text = TITLE_FONT.render("WRONG", True, FAILURE_RED)
+
+                    # reveal, colour circle and draw text
+                    pygame.draw.circle(screen, predict_note.color, predict_note.screen_pos, NOTE_RADIUS)
+                    if "/" in predict_note.name:
+                        screen.blit(BUTTON_FONT.render(predict_note.name, True, WHITE), (predict_note.screen_pos[0]-18, predict_note.screen_pos[1]-7))
+                    else:
+                        screen.blit(BUTTON_FONT.render(predict_note.name, True, WHITE), (predict_note.screen_pos[0]-4, predict_note.screen_pos[1]-7))
+
+                    # draw success or wrong text
+                    screen.blit(success_text, (755, 715))
+
+                    # update screen
+                    pygame.display.update()
+                    pygame.time.delay(1000 * DISPLAY_ANSWER_TIME)
+
 
                     # save to file
                     save_data(saved_data)
