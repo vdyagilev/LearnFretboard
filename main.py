@@ -2,6 +2,7 @@ import pygame
 import sys
 import random
 import pickle
+import numpy
 
 
 # screen dimensions
@@ -27,7 +28,7 @@ COLORS = {
     "Ds/Ef": (252, 230, 28),
     "E": (250, 135, 31),
     "F": (61, 60, 60),
-    "Fs/Gf": (52, 0, 196),
+    "Fs/Gf": (0, 2, 122),
     "G": (109, 65, 26),
     "Gs/Af": (150, 23, 36),
 }
@@ -41,6 +42,18 @@ NOTE_POS = {
     4: ["B", "C", "Cs/Df", "D", "Ds/Ef", "E", "F", "Fs/Gf", "G", "Gs/Af", "A", "As/Bf", "B"],
     5: ["E", "F", "Fs/Gf", "G", "Gs/Af", "A", "As/Bf", "B", "C", "Cs/Df", "D", "Ds/Ef", "E"],
 }
+
+# playing tone
+NOTE_FREQ = {
+    0: [82.41, 87.31, 92.50, 98.00, 103.83, 110.00, 116.54, 123.47, 130.81, 138.59, 146.83, 155.56, 164.81],
+    1: [110.00, 116.54, 123.47, 130.81, 138.59, 146.83, 155.56, 164.81, 174.61, 185.00, 196.00, 207.65, 220.00],
+    2: [146.83, 155.56, 164.81, 174.61, 185.00, 196.00, 207.65, 220.00, 233.08, 246.94, 261.63, 277.18, 293.66],
+    3: [196.00, 207.65, 220.00, 233.08, 246.94, 261.63, 277.18, 293.66, 311.13, 329.63, 349.23, 369.99, 392.00],
+    4: [246.94, 261.63, 277.18, 293.66, 311.13, 329.63, 349.23, 369.99, 392.00, 415.30, 440.00, 466.16, 493.88],
+    5: [329.63, 349.23, 369.99, 392.00, 415.30, 440.00, 466.16, 493.88, 523.25, 554.37, 587.33, 622.25, 659.26],
+}
+SAMPLE_RATE = 44100
+
 NOTE_RADIUS = 20
 BUTTON_RADIUS = 28
 
@@ -66,10 +79,14 @@ class Note:
 
         # pygame display details
         self.color = COLORS[name]
+
         # calculate (x, y) of note on fretboard image
         left_edge = 150
         bottom_edge = 658
         self.screen_pos = (left_edge + (fret_idx * 106), bottom_edge - (string_idx * 108))
+
+        # sound frequency
+        self.frequency = NOTE_FREQ[string_idx][fret_idx]
 
     def get_accuracy(self) -> float:
         """Returns the prediction accuracy"""
@@ -81,6 +98,14 @@ class Note:
                 return 0.0
             else:
                 return 1.0
+
+    def play_sound(self):
+        arr = numpy.array([4096 * numpy.sin(2.0 * numpy.pi * self.frequency * x / SAMPLE_RATE) for x in range(0, SAMPLE_RATE)]).astype(numpy.int16)
+        arr2 = numpy.c_[arr,arr]
+        sound = pygame.sndarray.make_sound(arr2)
+        sound.play(-1)
+        pygame.time.delay(1000)
+        sound.stop()
 
     def __str__(self):
         return f'({self.name}) string: {self.string_idx} fret: {self.fret_idx} screen_coord: {self.screen_pos}'
@@ -131,6 +156,11 @@ def notes_equal(x, y) -> bool:
     """Returns True if Note x and Note y share same position on the fretboard"""
     return x.name == y.name and x.string_idx == y.string_idx and x.fret_idx == y.fret_idx
 
+def string_idx_to_letter(idx: int) -> str:
+    """Returns the letter of the idx of the string"""
+    strings = ['E', 'A', 'D', 'G', 'B', 'E']
+    return strings[idx]
+
 # Run game
 if __name__ == "__main__":
     try:
@@ -150,6 +180,10 @@ if __name__ == "__main__":
 
     # init pygame
     pygame.init()
+
+    # init sound library
+    pygame.mixer.init(SAMPLE_RATE,-16,2,512)
+
     # change window title
     pygame.display.set_caption('LearnFretboard')
 
@@ -246,7 +280,8 @@ if __name__ == "__main__":
                                 saved_note.total_guesses += 1
 
                         # create success text
-                        success_text = TITLE_FONT.render("CORRECT", True, SUCCESS_GREEN)
+                        success_text = TITLE_FONT.render('CORRECT', True, SUCCESS_GREEN)
+                        loc_text = BUTTON_FONT.render(f'{string_idx_to_letter(predict_note.string_idx)} string {predict_note.fret_idx} fret', True, SUCCESS_GREEN)
                     
                     # record incorrect guess
                     else:
@@ -256,7 +291,8 @@ if __name__ == "__main__":
                                 saved_note.total_guesses += 1
                         
                          # create failure text
-                        success_text = TITLE_FONT.render("WRONG", True, FAILURE_RED)
+                        success_text = TITLE_FONT.render('WRONG', True, FAILURE_RED)
+                        loc_text = BUTTON_FONT.render(f'{string_idx_to_letter(predict_note.string_idx)} string {predict_note.fret_idx} fret', True, FAILURE_RED)
 
                     # reveal, colour circle and draw text
                     pygame.draw.circle(screen, predict_note.color, predict_note.screen_pos, NOTE_RADIUS)
@@ -265,8 +301,14 @@ if __name__ == "__main__":
                     else:
                         screen.blit(BUTTON_FONT.render(predict_note.name, True, WHITE), (predict_note.screen_pos[0]-4, predict_note.screen_pos[1]-7))
 
+                    # play tone
+                    predict_note.play_sound()
+
                     # draw success or wrong text
                     screen.blit(success_text, (755, 715))
+                    
+                    # draw fret and string 
+                    screen.blit(loc_text, (760, 750))
 
                     # update screen
                     pygame.display.update()
