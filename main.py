@@ -194,7 +194,7 @@ if __name__ == "__main__":
     BUTTON_FONT = pygame.font.SysFont('Corbel', 21)
 
     # load fretboard skeleton image
-    fretboard_image = pygame.image.load("fretboard-skeleton.jpg")
+    fretboard_image = pygame.image.load("fretboard-skeleton.png")
 
     # init screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
