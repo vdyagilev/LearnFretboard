@@ -20,7 +20,7 @@ FAILURE_RED = (71, 0, 15)
 # colours for fretboard buttons
 COLORS = {
     "A": (226, 50, 51),
-    "As/Bf": (71, 104, 237),
+    "As/Bf": (92, 163, 255),
     "B": (186, 37, 245),
     "C": (227, 227, 227),
     "Cs/Df": (198, 247, 253), 
