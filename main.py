@@ -198,7 +198,7 @@ def get_interval_name(last_note: Note, predict_note: Note) -> str:
     else:
         interval_name = INTERVAL_NAMES[12-(abs(num_half_steps) % 12)]
     
-    print(f'note a: {last_note.name} note b: {predict_note.name} num_half_steps: {num_half_steps} interval_name: {interval_name}')
+    #print(f'note a: {last_note.name} note b: {predict_note.name} num_half_steps: {num_half_steps} interval_name: {interval_name}')
     return interval_name
 
         
