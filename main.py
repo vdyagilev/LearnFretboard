@@ -173,23 +173,34 @@ def get_interval_name(last_note: Note, predict_note: Note) -> str:
         else:
             return "Unison"
     
-    num_steps = 0
+    # get unique notes only, first sort by freq then find num_half_steps diff between a and b
+    all_freqs = []
+    for _, freqs in NOTE_FREQ.items():
+        all_freqs += freqs
+    sorted_freqs = sorted(all_freqs)
+
+    unique_freqs = []
+    for f in sorted_freqs:
+            if f not in unique_freqs:
+                unique_freqs.append(f)
     
-    # count number of half-steps
-    last_note_idx = NOTE_NAMES.index(last_note.name)
-    predict_note_idx = NOTE_NAMES.index(predict_note.name)
-    while last_note_idx != predict_note_idx:
-        if last_note_idx + num_steps > len(NOTE_NAMES)-1:
-            if NOTE_NAMES[((last_note_idx + num_steps-1) % len(NOTE_NAMES))] == predict_note.name:
-                break
-        else:
-            if NOTE_NAMES[(last_note_idx + num_steps)] == predict_note.name:
-                break
 
-        num_steps += 1
+    # find positions in absolute frequency list
+    first_idx = unique_freqs.index(last_note.frequency)
+    second_idx = unique_freqs.index(predict_note.frequency)
 
+    # get difference
+    num_half_steps = second_idx - first_idx
 
-    return INTERVAL_NAMES[num_steps]
+    if num_half_steps > 0 :
+        # second pitch is higher than first
+        interval_name = INTERVAL_NAMES[num_half_steps % 12]
+    else:
+        interval_name = INTERVAL_NAMES[12-(abs(num_half_steps) % 12)]
+    
+    print(f'note a: {last_note.name} note b: {predict_note.name} num_half_steps: {num_half_steps} interval_name: {interval_name}')
+    return interval_name
+
         
 
 # Run game
