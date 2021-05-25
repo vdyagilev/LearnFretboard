@@ -11,11 +11,13 @@ WINDOW_HEIGHT = 1000
 
 # default colours 
 WHITE = (255,255,255)
-DARK_GREY = (100,100,100)
+DARK_GREY = ( 111, 111, 111)
 LIGHT_GREY = (170,170,170)
 VERY_DARK_GREY = (13, 13, 13)
 SUCCESS_GREEN = (0, 48, 18)
 FAILURE_RED = (71, 0, 15)
+BEEKEEPER = (246, 229, 141)
+SPICED_NECTARINE = (255, 190, 118)
 
 # colours for fretboard buttons
 COLORS = {
@@ -42,6 +44,8 @@ NOTE_POS = {
     4: ["B", "C", "Cs/Df", "D", "Ds/Ef", "E", "F", "Fs/Gf", "G", "Gs/Af", "A", "As/Bf", "B"],
     5: ["E", "F", "Fs/Gf", "G", "Gs/Af", "A", "As/Bf", "B", "C", "Cs/Df", "D", "Ds/Ef", "E"],
 }
+
+INTERVAL_NAMES = ["Unison", "Minor 2nd", "Major 2nd", "Minor 3rd", "Major 3rd", "Perfect Fourth", "Tritone", "Perfect Fifth", "Minor 6th", "Major 6th", "Minor 7th", "Major 7th", "Octave"]
 
 # playing tone
 NOTE_FREQ = {
@@ -161,6 +165,33 @@ def string_idx_to_letter(idx: int) -> str:
     strings = ['E', 'A', 'D', 'G', 'B', 'E']
     return strings[idx]
 
+def get_interval_name(last_note: Note, predict_note: Note) -> str:
+    # if same note
+    if last_note.name == predict_note.name:
+        if NOTE_FREQ[last_note.string_idx][last_note.fret_idx] != NOTE_FREQ[predict_note.string_idx][predict_note.fret_idx]:
+            return "Octave"
+        else:
+            return "Unison"
+    
+    num_steps = 0
+    
+    # count number of half-steps
+    last_note_idx = NOTE_NAMES.index(last_note.name)
+    predict_note_idx = NOTE_NAMES.index(predict_note.name)
+    while last_note_idx != predict_note_idx:
+        if last_note_idx + num_steps > len(NOTE_NAMES)-1:
+            if NOTE_NAMES[((last_note_idx + num_steps-1) % len(NOTE_NAMES))] == predict_note.name:
+                break
+        else:
+            if NOTE_NAMES[(last_note_idx + num_steps)] == predict_note.name:
+                break
+
+        num_steps += 1
+
+
+    return INTERVAL_NAMES[num_steps]
+        
+
 # Run game
 if __name__ == "__main__":
     try:
@@ -207,6 +238,7 @@ if __name__ == "__main__":
 
     # GAME LOOP
     curr_stats = {"num_correct": 0, "num_wrong": 0, "note_history": []} # keep track of curr round metrics
+    last_note = None
     while True:
 
         # fill screen with background colour
@@ -247,8 +279,19 @@ if __name__ == "__main__":
         if len(curr_stats["note_history"]) == curr_stats["num_correct"] + curr_stats["num_wrong"]:
             curr_stats["note_history"].append(predict_note)
 
+        # draw interval from last note, if last note exists and is not equal to this note
+        if last_note and not notes_equal(last_note, predict_note):
+            # draw line connecting them 
+            pygame.draw.line(screen, BEEKEEPER, last_note.screen_pos, predict_note.screen_pos, width=8)
+            # draw name of interval
+            midp_x, midp_y = (last_note.screen_pos[0] + predict_note.screen_pos[0])/2, (last_note.screen_pos[1] + predict_note.screen_pos[1])/2
+            
+            interval_name = get_interval_name(last_note, predict_note)
+            screen.blit(BUTTON_FONT.render(interval_name, True, SPICED_NECTARINE), (midp_x, midp_y-15))
+
         # draw a grey note for user to predict
         pygame.draw.circle(screen, LIGHT_GREY, predict_note.screen_pos, NOTE_RADIUS)
+
 
         # get user input and do actions
 
@@ -324,6 +367,9 @@ if __name__ == "__main__":
                     for note in sorted_notes:
                         print(f'{note.name} sf: ({note.string_idx}, {note.fret_idx}) accur: {note.get_accuracy()}')
                     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+                    # save as temp variable, last_note
+                    last_note = predict_note
                 else:
                     pass
 
