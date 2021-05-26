@@ -196,7 +196,9 @@ def get_interval_name(last_note: Note, predict_note: Note) -> str:
         # second pitch is higher than first
         interval_name = INTERVAL_NAMES[num_half_steps % 12]
     else:
-        interval_name = INTERVAL_NAMES[12-(abs(num_half_steps) % 12)]
+        # second pitch is lower than first. invert the intervals
+        idx = 12-(12-(abs(num_half_steps) % 12))
+        interval_name = INTERVAL_NAMES[idx]
     
     #print(f'note a: {last_note.name} note b: {predict_note.name} num_half_steps: {num_half_steps} interval_name: {interval_name}')
     return interval_name
@@ -297,11 +299,18 @@ if __name__ == "__main__":
             # draw name of interval
             midp_x, midp_y = (last_note.screen_pos[0] + predict_note.screen_pos[0])/2, (last_note.screen_pos[1] + predict_note.screen_pos[1])/2
             
+            # draw circle, and interval name on top
+
+            # draw a grey note for user to predict
+            pygame.draw.circle(screen, LIGHT_GREY, predict_note.screen_pos, NOTE_RADIUS)
+
             interval_name = get_interval_name(last_note, predict_note)
             screen.blit(BUTTON_FONT.render(interval_name, True, SPICED_NECTARINE), (midp_x, midp_y-15))
-
-        # draw a grey note for user to predict
-        pygame.draw.circle(screen, LIGHT_GREY, predict_note.screen_pos, NOTE_RADIUS)
+        
+        else:
+            # draw a grey note for user to predict
+            pygame.draw.circle(screen, LIGHT_GREY, predict_note.screen_pos, NOTE_RADIUS)
+        
 
 
         # get user input and do actions
