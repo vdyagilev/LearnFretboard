@@ -45,7 +45,7 @@ NOTE_POS = {
     5: ["E", "F", "Fs/Gf", "G", "Gs/Af", "A", "As/Bf", "B", "C", "Cs/Df", "D", "Ds/Ef", "E"],
 }
 
-INTERVAL_NAMES = ["Unison", "Minor 2nd", "Major 2nd", "Minor 3rd", "Major 3rd", "Perfect Fourth", "Tritone", "Perfect Fifth", "Minor 6th", "Major 6th", "Minor 7th", "Major 7th", "Octave"]
+INTERVAL_NAMES = ["Unison", "Minor 2nd", "Major 2nd", "Minor 3rd", "Major 3rd", "Perfect 4th", "Tritone", "Perfect 5th", "Minor 6th", "Major 6th", "Minor 7th", "Major 7th", "Octave"]
 
 # playing tone
 NOTE_FREQ = {
@@ -137,6 +137,9 @@ def button_at_pos(coord: tuple) -> str:
     return ""
 
 
+def zero_one_norm(xi, max_i, min_i):
+    return (xi - min_i) / (max_i - min_i)
+
 def choose_note(curr_stats, hist_stats):
     """Returns a note for user to predict. Returns in-progress note or random note from the 3 with lowest accuracy"""
     total_pred = curr_stats["num_correct"] + curr_stats["num_wrong"]
@@ -153,6 +156,10 @@ def choose_note(curr_stats, hist_stats):
 
         except ZeroDivisionError:
             prob_dist.append(1)
+
+    # normalize prob dist between 0 and 1
+    max_i, min_i = max(prob_dist), min(prob_dist)
+    prob_dist = [zero_one_norm(x, max_i, min_i) for x in prob_dist]
 
     return random.choices(hist_stats, prob_dist, k=1)[0]
     
@@ -305,7 +312,9 @@ if __name__ == "__main__":
             pygame.draw.circle(screen, LIGHT_GREY, predict_note.screen_pos, NOTE_RADIUS)
 
             interval_name = get_interval_name(last_note, predict_note)
-            screen.blit(BUTTON_FONT.render(interval_name, True, SPICED_NECTARINE), (midp_x, midp_y-15))
+            
+    
+            screen.blit(BUTTON_FONT.render(interval_name, True, WHITE), (midp_x, midp_y-15))
         
         else:
             # draw a grey note for user to predict
