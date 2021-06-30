@@ -199,13 +199,22 @@ def get_interval_name(last_note: Note, predict_note: Note) -> str:
     # get difference
     num_half_steps = second_idx - first_idx
 
+    # if true then will return the interval(y, x) if freq(x) > freq(y), rather than interval(x, y) 
+
+    # aka: if note x is higher than y in pitch then will return interval from y to x.
+    # otherwise returns x to y without account to pitch
+    USE_ABSOLUTE_INTERVAL = False
+
     if num_half_steps > 0 :
         # second pitch is higher than first
         interval_name = INTERVAL_NAMES[num_half_steps % 12]
     else:
-        # second pitch is lower than first. invert the intervals
-        idx = 12-(12-(abs(num_half_steps) % 12))
-        interval_name = INTERVAL_NAMES[idx]
+        if USE_ABSOLUTE_INTERVAL:
+            # second pitch is lower than first. invert the intervals
+            idx = 12-(12-(abs(num_half_steps) % 12))
+            interval_name = INTERVAL_NAMES[idx]
+        else:
+            interval_name = INTERVAL_NAMES[num_half_steps % 12]
     
     #print(f'note a: {last_note.name} note b: {predict_note.name} num_half_steps: {num_half_steps} interval_name: {interval_name}')
     return interval_name
