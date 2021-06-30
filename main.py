@@ -1,8 +1,10 @@
+from numpy.lib.polynomial import _poly_dispatcher
 import pygame
 import sys
 import random
 import pickle
 import numpy
+import time
 
 
 # screen dimensions
@@ -69,17 +71,20 @@ DISPLAY_ANSWER_TIME = 2 # seconds
 
 ################################################################################################
 
+class Guess:
+    def __init__(self, real: str, guessed: str, time: int):
+        self.real = real
+        self.guessed = guessed
+        self.time = time
+        self.was_correct = self.real == self.guessed
+
 class Note:
     """Represents a single note and its game properties on the fretboard"""
-    def __init__(self, name: str, string_idx: int, fret_idx: int):
+    def __init__(self, name: str, string_idx: int, fret_idx: int, num_correct=0, total_guesses=0, times=[]):
         # basic details
         self.name = name
         self.string_idx = string_idx
         self.fret_idx = fret_idx
-
-        # prediction accuracy
-        self.num_correct = 0
-        self.total_guesses = 0
 
         # pygame display details
         self.color = COLORS[name]
@@ -92,16 +97,43 @@ class Note:
         # sound frequency
         self.frequency = NOTE_FREQ[string_idx][fret_idx]
 
+        # for average guess time
+        self.GUESS_CACHE_LEN = 100 # keep the times for only # of last guesses for averaging
+        self.NUM_GUESSES_TO_USE = 10
+        self.guesses = []
+
     def get_accuracy(self) -> float:
         """Returns the prediction accuracy"""
         try:
-            return self.num_correct / self.total_guesses
-            
-        except ZeroDivisionError:
-            if self.num_correct == 0:
+            num_correct = 0
+            total_guesses = 0
+            for guess in self.guesses[-self.NUM_GUESSES_TO_USE:]:
+                if guess.was_correct:
+                    num_correct += 1
+
+                total_guesses += 1
+
+            return num_correct / total_guesses
+
+        except:
+            if num_correct == 0 or total_guesses == 0:
                 return 0.0
-            else:
-                return 1.0
+
+    def get_avg_guess_time(self) -> float:
+        # return the avg guess time for n_last guesses in seconds
+        total_time = 0.0
+        for guess in self.guesses[-self.NUM_GUESSES_TO_USE:]:
+            total_time += guess.time
+
+        avg_mls = total_time / self.NUM_GUESSES_TO_USE
+
+        # convert to secs
+        return 1000.0 * avg_mls 
+
+    def add_guess(self, guess: Guess):
+        # trim self.guesses to avoid too much data
+        self.guesses = self.guesses[-self.GUESS_CACHE_LEN:]
+        self.guesses.append(guess)
 
     def play_sound(self):
         arr = numpy.array([4096 * numpy.sin(2.0 * numpy.pi * self.frequency * x / SAMPLE_RATE) for x in range(0, SAMPLE_RATE)]).astype(numpy.int16)
@@ -112,7 +144,7 @@ class Note:
         sound.stop()
 
     def __str__(self):
-        return f'({self.name}) string: {self.string_idx} fret: {self.fret_idx} screen_coord: {self.screen_pos}'
+        return f'({self.name}) string: {self.string_idx} fret: {self.fret_idx} screen_coord: {self.screen_pos} num_corr: {self.num_correct} total_guess: {self.total_guesses}'
 
 def load_data() -> list:
     """Load data of note accuracies and such from pickled file"""
@@ -138,6 +170,9 @@ def button_at_pos(coord: tuple) -> str:
 
 
 def zero_one_norm(xi, max_i, min_i):
+    if max_i == min_i:
+        return xi
+        
     return (xi - min_i) / (max_i - min_i)
 
 def choose_note(curr_stats, hist_stats):
@@ -149,17 +184,27 @@ def choose_note(curr_stats, hist_stats):
         return curr_stats["note_history"][-1]
     
     # return a random note with probability distribution of the inverse of their prediction accuracy (prefer inaccurate notes)
+    # and their avg time 
+
     prob_dist = []
     for note in hist_stats:
         try:
-            prob_dist.append(1/note.get_accuracy())
+            # before any guesses (initialized)
+            if len(note.guesses) == 0:
+                prob_dist.append(100)
+
+            else:
+                # inverse of note guess acc ([0,1]) + note guess time in seconds
+                prob_dist.append( (1/note.get_accuracy()) + note.get_avg_guess_time())
 
         except ZeroDivisionError:
             prob_dist.append(1)
+    
 
     # normalize prob dist between 0 and 1
     max_i, min_i = max(prob_dist), min(prob_dist)
     prob_dist = [zero_one_norm(x, max_i, min_i) for x in prob_dist]
+
 
     return random.choices(hist_stats, prob_dist, k=1)[0]
     
@@ -300,6 +345,7 @@ if __name__ == "__main__":
                 screen.blit(BUTTON_FONT.render(note_name, True, WHITE), (coord[0]-5, coord[1]-7))
 
         # draw note to predict
+        start_time = time.time()
 
         # choose note for user to predict
         predict_note = choose_note(curr_stats, saved_data)
@@ -321,8 +367,7 @@ if __name__ == "__main__":
             pygame.draw.circle(screen, LIGHT_GREY, predict_note.screen_pos, NOTE_RADIUS)
 
             interval_name = get_interval_name(last_note, predict_note)
-            
-    
+        
             screen.blit(BUTTON_FONT.render(interval_name, True, WHITE), (midp_x, midp_y-15))
         
         else:
@@ -348,17 +393,23 @@ if __name__ == "__main__":
 
                 # get name of button pressed or ""
                 butt_press_name = button_at_pos(mouse)
+                
+                if butt_press_name:
 
-                if butt_press_name != "":
                     # record correct guess
                     if butt_press_name == predict_note.name:
+
                         # record current game stats
                         curr_stats["num_correct"] += 1
+
                         # record saved file data
                         for saved_note in saved_data:
                             if notes_equal(predict_note, saved_note):
-                                saved_note.num_correct += 1
-                                saved_note.total_guesses += 1
+                                # time to make choice from start
+                                guess_time = time.time() - start_time 
+
+                                # add guess to saved note class cached guess storage 
+                                saved_note.add_guess(Guess(predict_note.name, butt_press_name, guess_time))
 
                         # create success text
                         success_text = TITLE_FONT.render('CORRECT', True, SUCCESS_GREEN)
@@ -369,7 +420,11 @@ if __name__ == "__main__":
                         curr_stats["num_wrong"] += 1
                         for saved_note in saved_data:
                             if notes_equal(predict_note, saved_note):
-                                saved_note.total_guesses += 1
+                                # time to make choice from start
+                                guess_time = time.time() - start_time 
+
+                                # add guess to saved note class cached guess storage 
+                                saved_note.add_guess(Guess(predict_note.name, butt_press_name, guess_time))
                         
                          # create failure text
                         success_text = TITLE_FONT.render('WRONG', True, FAILURE_RED)
@@ -401,9 +456,10 @@ if __name__ == "__main__":
 
                     # print accuracies of all notes
                     sorted_notes = sorted(saved_data, key=lambda n: n.get_accuracy())
+
                     print("\nHow I'm Doing")
                     for note in sorted_notes:
-                        print(f'{note.name} sf: ({note.string_idx}, {note.fret_idx}) accur: {note.get_accuracy()}')
+                        print(f'{note.name} sf: ({note.string_idx}, {note.fret_idx}) accur: {note.get_accuracy()} avg time: {note.get_avg_guess_time()}')
                     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
                     # save as temp variable, last_note
