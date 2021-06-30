@@ -99,7 +99,7 @@ class Note:
 
         # for average guess time
         self.GUESS_CACHE_LEN = 100 # keep the times for only # of last guesses for averaging
-        self.NUM_GUESSES_TO_USE = 10
+        self.NUM_GUESSES_TO_USE = 4
         self.guesses = []
 
     def get_accuracy(self) -> float:
@@ -188,23 +188,25 @@ def choose_note(curr_stats, hist_stats):
 
     prob_dist = []
     for note in hist_stats:
-        try:
-            # before any guesses (initialized)
-            if len(note.guesses) == 0:
-                prob_dist.append(100)
+        # before any guesses (initialized)
+        if len(note.guesses) == 0:
+            prob_dist.append(100)
 
+        else:
+            # inverse of note guess acc ([0,1]) + note guess time in seconds
+            if note.get_accuracy() == 0:
+                a = 100
             else:
-                # inverse of note guess acc ([0,1]) + note guess time in seconds
-                prob_dist.append( (1/note.get_accuracy()) + note.get_avg_guess_time())
-
-        except ZeroDivisionError:
-            prob_dist.append(1)
+                a = (1/note.get_accuracy())
+            b = note.get_avg_guess_time()
+            prob_dist.append( a + b)
     
 
     # normalize prob dist between 0 and 1
     max_i, min_i = max(prob_dist), min(prob_dist)
     prob_dist = [zero_one_norm(x, max_i, min_i) for x in prob_dist]
 
+    print(f'\n {prob_dist} \n')
 
     return random.choices(hist_stats, prob_dist, k=1)[0]
     
@@ -459,7 +461,7 @@ if __name__ == "__main__":
 
                     print("\nHow I'm Doing")
                     for note in sorted_notes:
-                        print(f'{note.name} sf: ({note.string_idx}, {note.fret_idx}) accur: {note.get_accuracy()} avg time: {note.get_avg_guess_time()}')
+                        print(f'{note.name} sf: ({note.string_idx}, {note.fret_idx}) accur: {note.get_accuracy()} avg time: {note.get_avg_guess_time()}' )
                     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
                     # save as temp variable, last_note
