@@ -5,6 +5,8 @@ import random
 import pickle
 import numpy
 import time
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 # screen dimensions
@@ -67,7 +69,7 @@ BUTTON_RADIUS = 28
 SAVED_DATA_FILE = "saved_data.pickle"
 
 # number of seconds to display correct answer
-DISPLAY_ANSWER_TIME = 2 # seconds
+DISPLAY_ANSWER_TIME = 1# seconds
 
 ################################################################################################
 
@@ -98,8 +100,8 @@ class Note:
         self.frequency = NOTE_FREQ[string_idx][fret_idx]
 
         # for average guess time
-        self.GUESS_CACHE_LEN = 100 # keep the times for only # of last guesses for averaging
-        self.NUM_GUESSES_TO_USE = 4
+        self.GUESS_CACHE_LEN = 5 # total kept
+        self.NUM_GUESSES_TO_USE = 3 # used 
         self.guesses = []
 
     def get_accuracy(self) -> float:
@@ -130,9 +132,30 @@ class Note:
         # convert to secs
         return 1000.0 * avg_mls 
 
-    def add_guess(self, guess: Guess):
+    def _update_guesses(self):
         # trim self.guesses to avoid too much data
         self.guesses = self.guesses[-self.GUESS_CACHE_LEN:]
+
+        # remove time outliers
+        guess_times = np.array([guess.time for guess in self.guesses])
+
+        def reject_outliers(data, m=6.):
+            d = np.abs(data - np.median(data))
+            mdev = np.median(d)
+            s = d / (mdev if mdev else 1.)
+            return data[s < m].tolist()
+
+        normal_guess_times = reject_outliers(guess_times)
+
+        # keep only guesses without outlier values
+        updated = list(filter(lambda g: g.time in normal_guess_times, self.guesses))
+        self.guesses = updated
+
+    def add_guess(self, guess: Guess):
+        # run a service function 
+        self._update_guesses()
+
+        # add to storage
         self.guesses.append(guess)
 
     def play_sound(self):
@@ -183,11 +206,23 @@ def choose_note(curr_stats, hist_stats):
     if len(curr_stats["note_history"]) > total_pred:
         return curr_stats["note_history"][-1]
     
+    # get zero-one normalized prob dist based on time and accuracy
+    prob_dist = get_prob_dist(hist_stats)
+
+    # add small number to ensure zero one is not zero anymore
+    SMALL_NUM = (1/78)
+    prob_dist = [x + SMALL_NUM for x in prob_dist]
+
+    print(f'\n {prob_dist} \n')
+
+    return random.choices(hist_stats, prob_dist, k=1)[0]
+    
+def get_prob_dist(notes_list):
     # return a random note with probability distribution of the inverse of their prediction accuracy (prefer inaccurate notes)
     # and their avg time 
 
     prob_dist = []
-    for note in hist_stats:
+    for note in notes_list:
         # before any guesses (initialized)
         if len(note.guesses) == 0:
             prob_dist.append(100)
@@ -206,10 +241,8 @@ def choose_note(curr_stats, hist_stats):
     max_i, min_i = max(prob_dist), min(prob_dist)
     prob_dist = [zero_one_norm(x, max_i, min_i) for x in prob_dist]
 
-    print(f'\n {prob_dist} \n')
+    return prob_dist
 
-    return random.choices(hist_stats, prob_dist, k=1)[0]
-    
 def notes_equal(x, y) -> bool:
     """Returns True if Note x and Note y share same position on the fretboard"""
     return x.name == y.name and x.string_idx == y.string_idx and x.fret_idx == y.fret_idx
@@ -457,12 +490,20 @@ if __name__ == "__main__":
                     save_data(saved_data)
 
                     # print accuracies of all notes
-                    sorted_notes = sorted(saved_data, key=lambda n: n.get_accuracy())
+                    sorted_notes = saved_data
 
                     print("\nHow I'm Doing")
                     for note in sorted_notes:
                         print(f'{note.name} sf: ({note.string_idx}, {note.fret_idx}) accur: {note.get_accuracy()} avg time: {note.get_avg_guess_time()}' )
                     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+                    # draw how im doing as bar chart 
+                    plt.bar([f'{n.name} ({n.frequency})' for n in sorted_notes], get_prob_dist(sorted_notes))
+                    plt.title('Prob of Picking Next Note')
+                    plt.xlabel('Note')
+                    plt.xticks(fontsize=8, rotation=90)
+                    plt.ylabel('Prob')
+                    plt.savefig('next_note_prob.png', bbox_inches='tight')
 
                     # save as temp variable, last_note
                     last_note = predict_note
