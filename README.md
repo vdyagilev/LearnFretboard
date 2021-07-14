@@ -41,6 +41,14 @@ python play_intervals.
 
 Your accuraries for every note and interval is stored in /saved_data/ as `.pickle` files. Delete this directory to restart progress.
 
+## Probabilities and Metrics
+
+The probability distribution of getting the next note/interval are located at `next_note_prob.png` and `next_interval_prob.png`, and is useful to visualize your learning progress. 
+
+![screenshot](next_note_prob.png)
+
+![screenshot](next_interval_prob.png)
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
