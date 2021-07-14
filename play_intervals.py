@@ -46,7 +46,8 @@ def choose_interval(curr_stats, hist_stats):
     prob_dist = calc_prob_dist_guessmaker(hist_stats)
 
     # add small number to ensure zero one is not zero anymore
-    SMALL_NUM = (1/78)
+    SMALL_NUM = (1/6084) # there are 6084 unique intervals
+
     prob_dist = [x + SMALL_NUM for x in prob_dist]
 
     return random.choices(hist_stats, prob_dist, k=1)[0]
@@ -252,8 +253,10 @@ if __name__ == "__main__":
                     # save to file
                     save_data(saved_data, SAVED_INTERVALS_FILE)
 
-                    # PRINTING AND DRAWING STATS TAKES A LONG TIME (~30s)
-                    # SINCE WE HAVE 6083 INTERVALS. I turned it off for that reason.
+                    # I COMMENED (TURNED OFF) THE BELOW DRAW AND PRINT
+
+                    # # PRINTING AND DRAWING STATS TAKES A LONG TIME (~30s)
+                    # # SINCE WE HAVE 6083 INTERVALS.
 
                     # # every 25x notes print and draw stats
                     # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -267,12 +270,12 @@ if __name__ == "__main__":
 
                     #     # draw how im doing as bar chart
                     #     plt.bar([f'{n.get_short_name()}' for n in saved_data], calc_prob_dist_guessmaker(saved_data))
-                    #     plt.title('Prob of Picking Next Interval')
+                    #     plt.title('Weights of Next Interval Pick')
                     #     plt.xlabel('Interval')
                     #     plt.xticks(fontsize=8, rotation=90)
-                    #     plt.ylabel('Prob')
+                    #     plt.ylabel('Factor')
                     #     plt.savefig('next_interval_prob.png', bbox_inches='tight')
-                    # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 else:
                     pass
 

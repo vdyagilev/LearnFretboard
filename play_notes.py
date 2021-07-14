@@ -249,11 +249,11 @@ if __name__ == "__main__":
                         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
                         # draw how im doing as bar chart
-                        plt.bar([f'{n.name} ({n.frequency})' for n in sorted_notes], (sorted_notes))
-                        plt.title('Prob of Picking Next Note')
+                        plt.bar([f'{n.name} ({n.frequency})' for n in sorted_notes], calc_prob_dist_guessmaker(sorted_notes))
+                        plt.title('Weights of Next Note Pick')
                         plt.xlabel('Note')
                         plt.xticks(fontsize=8, rotation=90)
-                        plt.ylabel('Prob')
+                        plt.ylabel('Factor')
                         plt.savefig('next_note_prob.png', bbox_inches='tight')
                     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     
