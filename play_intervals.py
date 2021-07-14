@@ -141,7 +141,12 @@ if __name__ == "__main__":
 
             # draw action button with label
             coord = (100 + i*(x_step_size+1.2*BUTTON_RADIUS), 900)
-            pygame.draw.circle(screen, BUTTON_BLUE, coord, BUTTON_RADIUS)
+            # even buttons slightly darker bgnd
+            if i % 2 == 0:
+                bngd_color = BUTTON_BLUE
+            else:
+                bngd_color = BUTTON_BLUE_GREY
+            pygame.draw.circle(screen, bngd_color, coord, BUTTON_RADIUS)
 
             # get short interval name ex. (m3)
             short_interval_name = SHORT_INTERVAL_NAMES[i]
