@@ -97,7 +97,7 @@ if __name__ == "__main__":
     # init pygame related constants
 
     # default font
-    TITLE_FONT = pygame.font.SysFont('Corbel', 42)
+    TITLE_FONT = pygame.font.SysFont('Corbel', 51)
     BUTTON_FONT = pygame.font.SysFont('Corbel', 21)
     LABEL_FONT = pygame.font.SysFont('Corbel', 32)
 
@@ -109,7 +109,7 @@ if __name__ == "__main__":
 
     # rendering a text written in
     # this font
-    title = TITLE_FONT.render('Learn Fretboard Intervals', True, VERY_DARK_GREY)
+    title = TITLE_FONT.render('Learn Fretboard Intervals', True, (45, 52, 54))
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -118,7 +118,9 @@ if __name__ == "__main__":
     while True:
 
         # fill screen with background colour
-        screen.fill(VERY_DARK_GREY)
+        screen.fill((223, 230, 233))
+        pygame.draw.rect(screen, (99, 110, 114), (0, WINDOW_HEIGHT-220, WINDOW_WIDTH, 20))
+        pygame.draw.rect(screen, (45, 52, 54), (0, WINDOW_HEIGHT-200, WINDOW_WIDTH, 200))
 
         # draw freboard skeleton image
         screen.blit(fretboard_image, (0, 0))
@@ -173,9 +175,8 @@ if __name__ == "__main__":
         # draw red box around note_a to tell direction
         x_a, y_a = note_a.screen_pos
         #x_b, y_b = note_b.screen_pos
-        pygame.draw.circle(screen, BEEKEEPER, (x_a, y_a), NOTE_RADIUS+6)
-        #pygame.draw.circle(screen, WHITE, (x_b, y_b), NOTE_RADIUS+6)
-
+        pygame.draw.circle(screen, (235,155,65), (x_a, y_a), NOTE_RADIUS+12)
+        pygame.draw.circle(screen, (239,185,95), (x_a, y_a), NOTE_RADIUS+9)
         # draw notes
         pygame.draw.circle(screen, note_a.color, note_a.screen_pos, NOTE_RADIUS)
         pygame.draw.circle(screen, note_b.color, note_b.screen_pos, NOTE_RADIUS)

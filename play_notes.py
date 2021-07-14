@@ -78,7 +78,7 @@ if __name__ == "__main__":
     # init pygame related constants
 
     # default font
-    TITLE_FONT = pygame.font.SysFont('Corbel', 42)
+    TITLE_FONT = pygame.font.SysFont('Corbel', 51)
     BUTTON_FONT = pygame.font.SysFont('Corbel', 21)
 
     # load fretboard skeleton image
@@ -97,9 +97,11 @@ if __name__ == "__main__":
     curr_stats = {"num_correct": 0, "num_wrong": 0, "note_history": []} # keep track of curr round metrics
     last_note = None
     while True:
-
         # fill screen with background colour
-        screen.fill(VERY_DARK_GREY)
+        screen.fill((223, 230, 233))
+        pygame.draw.rect(screen, (99, 110, 114), (0, WINDOW_HEIGHT-220, WINDOW_WIDTH, 20))
+        pygame.draw.rect(screen, (45, 52, 54), (0, WINDOW_HEIGHT-200, WINDOW_WIDTH, 200))
+
 
         # draw freboard skeleton image
         screen.blit(fretboard_image, (0, 0))
