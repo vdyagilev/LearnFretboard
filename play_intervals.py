@@ -115,7 +115,6 @@ if __name__ == "__main__":
 
     # GAME LOOP
     curr_stats = {"num_correct": 0, "num_wrong": 0, "interval_history": []} # keep track of curr round metrics
-    last_interval = None
     while True:
 
         # fill screen with background colour
@@ -253,29 +252,35 @@ if __name__ == "__main__":
                     # save to file
                     save_data(saved_data, SAVED_INTERVALS_FILE)
 
-                    # I COMMENED (TURNED OFF) THE BELOW DRAW AND PRINT
+                    # sort by acc
+                    sorted_data = sorted(saved_data, key=lambda x: x.get_accuracy())
 
-                    # # PRINTING AND DRAWING STATS TAKES A LONG TIME (~30s)
-                    # # SINCE WE HAVE 6083 INTERVALS.
-
-                    # # every 25x notes print and draw stats
-                    # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                    # if len(curr_stats["interval_history"]) % 25 == 0:    
-
-                    #     print("\nHow I'm Doing")
-                    #     for i, interval in enumerate(saved_data):
-                    #         print(f'{i} {interval.get_short_name()} note a: {interval.note_a.name} note b: {interval.note_b.name} accur: {interval.get_accuracy()} avg time: {interval.get_avg_guess_time()}' )
-
-                    #     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-
-                    #     # draw how im doing as bar chart
-                    #     plt.bar([f'{n.get_short_name()}' for n in saved_data], calc_prob_dist_guessmaker(saved_data))
-                    #     plt.title('Weights of Next Interval Pick')
-                    #     plt.xlabel('Interval')
-                    #     plt.xticks(fontsize=8, rotation=90)
-                    #     plt.ylabel('Factor')
-                    #     plt.savefig('next_interval_prob.png', bbox_inches='tight')
+                    # every 10x notes print and draw stats
                     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                    if len(curr_stats["interval_history"]) % 10 == 0:    
+
+                        print("\nHow I'm Doing")
+                        for i, interval in enumerate(sorted_data):
+                            print(f'{i} {interval.get_short_name()} note a: {interval.note_a.name} note b: {interval.note_b.name} accur: {interval.get_accuracy()} avg time: {interval.get_avg_guess_time()}' )
+
+                        unseen_intervals = list(filter(lambda x: len(x.guesses) == 0, sorted_data))
+                        if unseen_intervals:
+                            print(f'{len(unseen_intervals)} still unseen.')
+                        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+                        # I COMMENED (TURNED OFF) THE BELOW DRAW AND PRINT
+
+                        # # PRINTING AND DRAWING STATS TAKES A LONG TIME (~30s)
+                        # # SINCE WE HAVE 6083 INTERVALS.
+
+                        # # draw how im doing as bar chart
+                        # plt.bar([f'{n.get_short_name()}' for n in saved_data], calc_prob_dist_guessmaker(sorted_data))
+                        # plt.title('Weights of Next Interval Pick')
+                        # plt.xlabel('Interval')
+                        # plt.xticks(fontsize=8, rotation=90)
+                        # plt.ylabel('Factor')
+                        # plt.savefig('next_interval_prob.png', bbox_inches='tight')
+
                 else:
                     pass
 

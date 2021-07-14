@@ -46,44 +46,18 @@ def get_interval_name(note_a, note_b) -> str:
         else:
             return "Unison"
     
-    # get unique notes only, first sort by freq then find num_half_steps diff between a and b
-    all_freqs = []
-    for _, freqs in NOTE_FREQ.items():
-        all_freqs += freqs
-    sorted_freqs = sorted(all_freqs)
-
-    unique_freqs = []
-    for f in sorted_freqs:
-            if f not in unique_freqs:
-                unique_freqs.append(f)
+    # else find how many half steps from note_a to note_b if note_b is higher in pitch (irregardless of its real pitch)
+    num_half_steps = 1
+    note_a_idx = NOTE_NAMES.index(note_a.name)
+    note_names = NOTE_NAMES + NOTE_NAMES + NOTE_NAMES # used to easily traverse upwards without fear of oob
+    note_above_note_a = note_names[note_a_idx+num_half_steps]
+    while note_b.name != note_above_note_a:
+        # incremement upwards to the next halfstep
+        num_half_steps += 1
+        note_above_note_a = note_names[note_a_idx+num_half_steps]
     
-
-    # find positions in absolute frequency list
-    first_idx = unique_freqs.index(note_a.frequency)
-    second_idx = unique_freqs.index(note_b.frequency)
-
-    # get difference
-    num_half_steps = second_idx - first_idx
-
-    # if true then will return the interval(y, x) if freq(x) > freq(y), rather than interval(x, y) 
-
-    # aka: if note x is higher than y in pitch then will return interval from y to x.
-    # otherwise returns x to y without account to pitch
-    USE_ABSOLUTE_INTERVAL = False
-
-    if num_half_steps > 0 :
-        # second pitch is higher than first
-        interval_name = INTERVAL_NAMES[num_half_steps % 12]
-    else:
-        if USE_ABSOLUTE_INTERVAL:
-            # second pitch is lower than first. invert the intervals
-            idx = 12-(12-(abs(num_half_steps) % 12))
-            interval_name = INTERVAL_NAMES[idx]
-        else:
-            interval_name = INTERVAL_NAMES[num_half_steps % 12]
-    
-    #print(f'note a: {note_a.name} note b: {note_b.name} num_half_steps: {num_half_steps} interval_name: {interval_name}')
-    return interval_name
+    # num_half_steps is the distance between the note_a to note_b when note_b is higher in pitch
+    return INTERVAL_NAMES[num_half_steps]
 
 def calc_prob_dist_guessmaker(guessmaker_list):
     # return a random note with probability distribution of the inverse of their prediction accuracy (prefer inaccurate notes)
