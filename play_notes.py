@@ -223,7 +223,7 @@ if __name__ == "__main__":
                         screen.blit(BUTTON_FONT.render(predict_note.name, True, WHITE), (predict_note.screen_pos[0]-4, predict_note.screen_pos[1]-7))
 
                     # play tone
-                    predict_note.play_sound()
+                    predict_note.play_sound(1000)
 
                     # draw success or wrong text
                     screen.blit(success_text, (755, 715))

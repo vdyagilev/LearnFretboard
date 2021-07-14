@@ -96,12 +96,12 @@ class Note(GuessMaker):
         self.frequency = NOTE_FREQ[string_idx][fret_idx]
 
 
-    def play_sound(self):
+    def play_sound(self, millisecs):
         arr = numpy.array([4096 * numpy.sin(2.0 * numpy.pi * self.frequency * x / SAMPLE_RATE) for x in range(0, SAMPLE_RATE)]).astype(numpy.int16)
         arr2 = numpy.c_[arr,arr]
         sound = pygame.sndarray.make_sound(arr2)
         sound.play(-1)
-        pygame.time.delay(1000)
+        pygame.time.delay(millisecs)
         sound.stop()
 
     def __str__(self):

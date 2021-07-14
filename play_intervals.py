@@ -243,8 +243,9 @@ if __name__ == "__main__":
                     midp_x, midp_y = (note_a.screen_pos[0] + note_b.screen_pos[0])/2, (note_a.screen_pos[1] + note_b.screen_pos[1])/2
                     screen.blit(LABEL_FONT.render(predict_interval.get_full_name(), True, WHITE), (midp_x, midp_y-15))
 
-                    # play tone
-                    note_b.play_sound()
+                    # play interval
+                    note_a.play_sound(1000)
+                    note_b.play_sound(1000)
 
                     # draw success or wrong text
                     screen.blit(success_text, (755, 715))
