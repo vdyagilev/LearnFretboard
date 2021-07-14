@@ -99,7 +99,7 @@ if __name__ == "__main__":
     # default font
     TITLE_FONT = pygame.font.SysFont('Corbel', 51)
     BUTTON_FONT = pygame.font.SysFont('Corbel', 21)
-    LABEL_FONT = pygame.font.SysFont('Corbel', 32)
+    LABEL_FONT = pygame.font.SysFont('Corbel', 42)
 
     # load fretboard skeleton image
     fretboard_image = pygame.image.load("fretboard-skeleton.png")
@@ -129,8 +129,8 @@ if __name__ == "__main__":
         screen.blit(title, (630, 40))
 
         # draw num_correct and num_wrong this round
-        num_correct_title = TITLE_FONT.render(f'Correct: {curr_stats["num_correct"]}', True, DARK_GREY)
-        num_wrong_title = TITLE_FONT.render(f'Wrong: {curr_stats["num_wrong"]}', True, DARK_GREY)
+        num_correct_title = LABEL_FONT.render(f'Correct: {curr_stats["num_correct"]}', True, DARK_GREY)
+        num_wrong_title = LABEL_FONT.render(f'Wrong: {curr_stats["num_wrong"]}', True, DARK_GREY)
         screen.blit(num_correct_title, (1150, 40))
         screen.blit(num_wrong_title, (1350, 40))
 
