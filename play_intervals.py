@@ -317,10 +317,13 @@ if __name__ == "__main__":
                     # draw the interval name on the midpoint of the line
                     midp_x, midp_y = (note_a_pos[0] + note_b_pos[0])/2, (note_a_pos[1] + note_b_pos[1])/2
                     side_margin = WINDOW_WIDTH / 16
+                    vert_margin = side_margin
                     if midp_x > WINDOW_WIDTH / 2:
                         side_margin = -side_margin
+                    if midp_y > WINDOW_HEIGHT /2:
+                        vert_margin = -vert_margin
                     
-                    screen.blit(LABEL_FONT.render(predict_interval.get_full_name(), True, WHITE), (midp_x+side_margin, midp_y-abs(side_margin)))
+                    screen.blit(LABEL_FONT.render(predict_interval.get_full_name(), True, WHITE), (midp_x-50+side_margin, midp_y+vert_margin))
 
                     # play interval from a to b, then back from b to a
                     play_len = 800
