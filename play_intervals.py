@@ -301,9 +301,12 @@ if __name__ == "__main__":
                     midp_x, midp_y = (note_a_pos[0] + note_b_pos[0])/2, (note_a_pos[1] + note_b_pos[1])/2
                     screen.blit(LABEL_FONT.render(predict_interval.get_full_name(), True, WHITE), (midp_x, midp_y-15))
 
-                    # play interval
-                    note_a.play_sound(1000)
-                    note_b.play_sound(1000)
+                    # play interval from a to b, then back from b to a
+                    play_len = 800
+                    note_a.play_sound(play_len)
+                    note_b.play_sound(play_len)
+                    note_b.play_sound(play_len)
+                    note_a.play_sound(play_len)
 
                     # draw success or wrong text
                     screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))
