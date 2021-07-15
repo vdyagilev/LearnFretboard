@@ -121,7 +121,6 @@ if __name__ == "__main__":
 
         # fill screen with background colour
         screen.fill((223, 230, 233))
-        
         pygame.draw.rect(screen, (99, 110, 114), (0, WINDOW_HEIGHT-menu_height, WINDOW_WIDTH, menu_height/10))
         pygame.draw.rect(screen, (45, 52, 54), (0, WINDOW_HEIGHT-menu_height, WINDOW_WIDTH, menu_height))
 
