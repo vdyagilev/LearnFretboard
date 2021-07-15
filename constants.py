@@ -1,6 +1,6 @@
 # screen dimensions
-WINDOW_WIDTH = 1600
-WINDOW_HEIGHT = 1000
+WINDOW_WIDTH =0.7* 1600
+WINDOW_HEIGHT =0.7* 1000
 
 # default colours 
 WHITE = (255,255,255)
@@ -69,5 +69,5 @@ SAVED_INTERVALS_FILE = "saved_intervals.pickle"
 DISPLAY_ANSWER_TIME = 1# seconds
 
 # GuessMaker
-GUESS_CACHE_LEN = 20 # how many guesses stores in guessmaker cache
-GUESS_OUTLIER_AVG = 4 # how many guesses are used to detect outlier entries 
+GUESS_CACHE_LEN = 10 # how many guesses stores in guessmaker cache
+GUESS_OUTLIER_AVG = 3 # how many guesses are used to detect outlier entries 
