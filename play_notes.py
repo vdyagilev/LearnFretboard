@@ -143,14 +143,14 @@ if __name__ == "__main__":
         # draw interval from last note, if last note exists and is not equal to this note
         if last_note and not notes_equal(last_note, predict_note):
             # draw line connecting them 
-            pygame.draw.line(screen, BEEKEEPER, last_note.screen_pos, predict_note.screen_pos, width=8)
+            pygame.draw.line(screen, BEEKEEPER, last_note.get_screen_pos(), predict_note.get_screen_pos(), width=8)
             # draw name of interval
-            midp_x, midp_y = (last_note.screen_pos[0] + predict_note.screen_pos[0])/2, (last_note.screen_pos[1] + predict_note.screen_pos[1])/2
+            midp_x, midp_y = (last_note.get_screen_pos()[0] + predict_note.get_screen_pos()[0])/2, (last_note.get_screen_pos()[1] + predict_note.get_screen_pos()[1])/2
             
             # draw circle, and interval name on top
 
             # draw a grey note for user to predict
-            pygame.draw.circle(screen, LIGHT_GREY, predict_note.screen_pos, NOTE_RADIUS)
+            pygame.draw.circle(screen, LIGHT_GREY, predict_note.get_screen_pos(), NOTE_RADIUS)
 
             interval_name = get_interval_name(last_note, predict_note)
         
@@ -158,7 +158,7 @@ if __name__ == "__main__":
         
         else:
             # draw a grey note for user to predict
-            pygame.draw.circle(screen, LIGHT_GREY, predict_note.screen_pos, NOTE_RADIUS)
+            pygame.draw.circle(screen, LIGHT_GREY, predict_note.get_screen_pos(), NOTE_RADIUS)
         
 
 
@@ -217,11 +217,11 @@ if __name__ == "__main__":
                         loc_text = BUTTON_FONT.render(f'{string_idx_to_letter(predict_note.string_idx)} string {predict_note.fret_idx} fret', True, FAILURE_RED)
 
                     # reveal, colour circle and draw text
-                    pygame.draw.circle(screen, predict_note.color, predict_note.screen_pos, NOTE_RADIUS)
+                    pygame.draw.circle(screen, predict_note.color, predict_note.get_screen_pos(), NOTE_RADIUS)
                     if "/" in predict_note.name:
-                        screen.blit(BUTTON_FONT.render(predict_note.name, True, WHITE), (predict_note.screen_pos[0]-18, predict_note.screen_pos[1]-7))
+                        screen.blit(BUTTON_FONT.render(predict_note.name, True, WHITE), (predict_note.get_screen_pos()[0]-18, predict_note.get_screen_pos()[1]-7))
                     else:
-                        screen.blit(BUTTON_FONT.render(predict_note.name, True, WHITE), (predict_note.screen_pos[0]-4, predict_note.screen_pos[1]-7))
+                        screen.blit(BUTTON_FONT.render(predict_note.name, True, WHITE), (predict_note.get_screen_pos()[0]-4, predict_note.get_screen_pos()[1]-7))
 
                     # play tone
                     predict_note.play_sound(1000)

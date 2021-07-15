@@ -89,3 +89,7 @@ def combine_colors(a, b):
     # color_a, color_b: (float64, float54, float64)  RGB
     # example: red = (226, 50, 51)
     return (a[0]+b[0])/2, (a[1]+b[1])/2, (a[2]+b[2])/2
+
+def simple_linspace(lower, upper, length):
+    """linear interpolation between two points lower and upper. length amount of points returned. Includes right endpoint"""
+    return [lower + x*(upper-lower)/(length-1) for x in range(length)]

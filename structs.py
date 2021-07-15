@@ -87,11 +87,6 @@ class Note(GuessMaker):
         # pygame display details
         self.color = COLORS[name]
 
-        # calculate (x, y) of note on fretboard image
-        left_edge = 150
-        bottom_edge = 658
-        self.screen_pos = (left_edge + (fret_idx * 106), bottom_edge - (string_idx * 108))
-
         # sound frequency
         self.frequency = NOTE_FREQ[string_idx][fret_idx]
 

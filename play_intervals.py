@@ -1,7 +1,7 @@
 from play_notes import get_interval_name
 import os
 from structs import Guess, Interval, Note
-from helpers import calc_prob_dist_guessmaker, combine_colors, intervals_equal, load_data, save_data, string_idx_to_letter, zero_one_norm
+from helpers import calc_prob_dist_guessmaker, combine_colors, intervals_equal, load_data, notes_equal, save_data, simple_linspace, string_idx_to_letter, zero_one_norm
 from constants import *
 
 from numpy.lib.polynomial import _poly_dispatcher
@@ -13,24 +13,25 @@ import numpy
 import time
 import matplotlib.pyplot as plt
 import numpy as np
+import math
+
 
 
 def button_at_pos(coord: tuple) -> str:
     """Return which button is located at (x,y)=coord, or "" if none"""
-    for i, interval_name in enumerate(INTERVAL_NAMES):
-        # check if y coord within button menu
-        dist_between = 118
-        width = 40
-        height = 40
-        horiz_line = 900
-        left_padding = 60
-
+    num_cols = 13
+    horiz_col_locs = [x for x in simple_linspace(side_padding, WINDOW_WIDTH-side_padding, num_cols)]
+    butt_height = 40
+    butt_width = 40
+    for i, x in enumerate(horiz_col_locs):
+        y = WINDOW_HEIGHT - menu_height/2
         # within vertical zone
-        if coord[1] > horiz_line-height and coord[1] < horiz_line+height:
-            # within horizontal zone
-            if coord[0] > (i*(dist_between)) + left_padding and coord[0] < (i*(dist_between)) + 2*width + left_padding:
-                return interval_name
-
+        if coord[1] > y-butt_height/2 and coord[1] < y+butt_height/2:
+            # within horiz zone
+            if coord[0] > x-butt_width/2 and coord[0] < x+butt_width/2:
+                # this idx contains the button. returns the full name of the interval in idx position
+                return INTERVAL_NAMES[i]
+    
     return ""
 
 
@@ -52,8 +53,6 @@ def choose_interval(curr_stats, hist_stats):
 
     return random.choices(hist_stats, prob_dist, k=1)[0]
 
-
-        
 
 # Run game
 if __name__ == "__main__":
@@ -97,15 +96,12 @@ if __name__ == "__main__":
     # init pygame related constants
 
     # default font
-    TITLE_FONT = pygame.font.SysFont('Corbel', 51)
+    TITLE_FONT = pygame.font.SysFont('Corbel', 48)
     BUTTON_FONT = pygame.font.SysFont('Corbel', 21)
     LABEL_FONT = pygame.font.SysFont('Corbel', 42)
 
-    # load fretboard skeleton image
-    fretboard_image = pygame.image.load("fretboard-skeleton.png")
-
     # init screen
-    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.RESIZABLE)
 
     # rendering a text written in
     # this font
@@ -113,47 +109,68 @@ if __name__ == "__main__":
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
     # GAME LOOP
     curr_stats = {"num_correct": 0, "num_wrong": 0, "interval_history": []} # keep track of curr round metrics
     while True:
+        # SETUP UI VARIABLES
+        top_padding = (WINDOW_HEIGHT/18)
+        side_padding = (WINDOW_WIDTH/12)
+        fretboard_side_padding = (WINDOW_WIDTH / 25)
+        menu_height = (1/5) * WINDOW_HEIGHT
 
         # fill screen with background colour
         screen.fill((223, 230, 233))
-        pygame.draw.rect(screen, (99, 110, 114), (0, WINDOW_HEIGHT-220, WINDOW_WIDTH, 20))
-        pygame.draw.rect(screen, (45, 52, 54), (0, WINDOW_HEIGHT-200, WINDOW_WIDTH, 200))
+        
+        pygame.draw.rect(screen, (99, 110, 114), (0, WINDOW_HEIGHT-menu_height, WINDOW_WIDTH, menu_height/10))
+        pygame.draw.rect(screen, (45, 52, 54), (0, WINDOW_HEIGHT-menu_height, WINDOW_WIDTH, menu_height))
+
+        # resize image dynamically
+        fretboard_image = pygame.image.load("fretboard-skeleton.png")
+        resize_height_ratio = WINDOW_HEIGHT / fretboard_image.get_height()
+        resize_width_ratio = WINDOW_WIDTH / fretboard_image.get_width()
+
+        fretboard_image_height, fretboard_image_width = int(min(resize_width_ratio * fretboard_image.get_height() -2* top_padding, int(WINDOW_HEIGHT*(4/5) -  1 * top_padding)))    , int(WINDOW_WIDTH -  1 * side_padding)
+        fretboard_image = pygame.transform.scale(fretboard_image, (fretboard_image_width, fretboard_image_height))
 
         # draw freboard skeleton image
-        screen.blit(fretboard_image, (0, 0))
+        fretboard_vert_padding = ((WINDOW_HEIGHT - menu_height)  - fretboard_image_height )/2
+        fretboard_side_padding = (WINDOW_WIDTH- fretboard_image_width )/2
+        screen.blit(fretboard_image, (fretboard_side_padding, fretboard_vert_padding)) 
+
 
         # draw title
-        screen.blit(title, (630, 40))
+        # create array of columns (each column is a x  in evenly spaced columns)
+        num_cols = 6
+        horiz_col_locs = [x for x in simple_linspace(side_padding, WINDOW_WIDTH-side_padding, num_cols)]
+        screen.blit(title, (horiz_col_locs[1] - 120, 40)) # draw in center col
 
         # draw num_correct and num_wrong this round
         num_correct_title = LABEL_FONT.render(f'Correct: {curr_stats["num_correct"]}', True, DARK_GREY)
         num_wrong_title = LABEL_FONT.render(f'Wrong: {curr_stats["num_wrong"]}', True, DARK_GREY)
-        screen.blit(num_correct_title, (1150, 40))
-        screen.blit(num_wrong_title, (1350, 40))
+        screen.blit(num_correct_title, (horiz_col_locs[3], 45))
+        screen.blit(num_wrong_title, (horiz_col_locs[4], 45))
 
         # draw action buttons
+        num_cols = 13
+        horiz_col_locs = [x for x in simple_linspace(side_padding, WINDOW_WIDTH-side_padding, num_cols)]
         for i, interval_name in enumerate(INTERVAL_NAMES):
-            # calc location
-            left_edge = 300
-            right_edge = 1400
-            x_step_size = (right_edge - left_edge) / len(INTERVAL_NAMES)
-
             # draw action button with label
-            coord = (100 + i*(x_step_size+1.2*BUTTON_RADIUS), 900)
+            coord = (horiz_col_locs[i], WINDOW_HEIGHT - menu_height/2)
+
             # even buttons slightly darker bgnd
             if i % 2 == 0:
                 bngd_color = BUTTON_BLUE
             else:
                 bngd_color = BUTTON_BLUE_GREY
+
             pygame.draw.circle(screen, bngd_color, coord, BUTTON_RADIUS)
 
             # get short interval name ex. (m3)
             short_interval_name = SHORT_INTERVAL_NAMES[i]
             if len(short_interval_name) != 1:
                 screen.blit(BUTTON_FONT.render(short_interval_name, True, WHITE), (coord[0]-9, coord[1]-7))
+
             else:
                 screen.blit(BUTTON_FONT.render(short_interval_name, True, WHITE), (coord[0]-5, coord[1]-7))
 
@@ -167,26 +184,58 @@ if __name__ == "__main__":
         if len(curr_stats["interval_history"]) == curr_stats["num_correct"] + curr_stats["num_wrong"]:
             curr_stats["interval_history"].append(predict_interval)
 
-        # draw the Interval connecting the notes
+
+        # Get Notes 
         note_a, note_b = predict_interval.note_a, predict_interval.note_b
-        pygame.draw.line(screen, combine_colors(note_a.color, note_b.color), 
-            note_a.screen_pos, note_b.screen_pos, width=14)
+
+        # Get position of note a and b as (x, y)
+        # generate all positions on the guitar fretboard as a 2D matrix of coordinates
+        all_note_pos = []
+        # calc bottom-left and top-right corners locations of fretboard image
+        fret_half_len = (WINDOW_WIDTH/44)
+        bl = (fretboard_side_padding+0.8*fret_half_len, WINDOW_HEIGHT-fretboard_vert_padding-menu_height) 
+        tr = (WINDOW_WIDTH-fretboard_side_padding-1.7*fret_half_len, fretboard_vert_padding)
+        num_frets, num_strs = 13, 6
+        for y in simple_linspace(bl[1], tr[1], num_strs):
+            for x in simple_linspace(bl[0], tr[0], num_frets):
+            
+                # just append (x, y) coord to a LIST of points
+                all_note_pos.append( (x, y) ) 
+        
+            
+        def get_note_pos(note):
+            # find the location of note in a ordered list of all note fqs then return the coordinate for that idx from all_note_pos
+            idx = 0
+            curr_note_fq = SORTED_NOTE_FREQ[idx]
+            while curr_note_fq != note.frequency:
+                idx += 1
+                curr_note_fq = SORTED_NOTE_FREQ[idx]
+
+            return all_note_pos[idx]
+
+
+        note_a_pos, note_b_pos = get_note_pos(note_a), get_note_pos(note_b)
+
+        # draw the Interval connecting the notes
+        pygame.draw.line(screen, combine_colors(note_a.color, note_b.color), note_a_pos, note_b_pos, width=14)
 
         # draw red box around note_a to tell direction
-        x_a, y_a = note_a.screen_pos
-        #x_b, y_b = note_b.screen_pos
+        x_a, y_a = note_a_pos
         pygame.draw.circle(screen, (235,155,65), (x_a, y_a), NOTE_RADIUS+12)
         pygame.draw.circle(screen, (239,185,95), (x_a, y_a), NOTE_RADIUS+9)
+
         # draw notes
-        pygame.draw.circle(screen, note_a.color, note_a.screen_pos, NOTE_RADIUS)
-        pygame.draw.circle(screen, note_b.color, note_b.screen_pos, NOTE_RADIUS)
+        pygame.draw.circle(screen, note_a.color, note_a_pos, NOTE_RADIUS)
+        pygame.draw.circle(screen, note_b.color, note_b_pos, NOTE_RADIUS)
 
         # draw note names
         def draw_note_name(note):
+            note_pos = get_note_pos(note)
+            x, y = note_pos
             if "/" in note.name:
-                screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (note.screen_pos[0]-18, note.screen_pos[1]-7))
+                screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-18, y-7))
             else:
-                screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (note.screen_pos[0]-4, note.screen_pos[1]-7))
+                screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-4, y-7))
 
         draw_note_name(note_a)
         draw_note_name(note_b)
@@ -200,8 +249,18 @@ if __name__ == "__main__":
         for ev in pygame.event.get():
 
             # exit game and cleanup on quit
-            if ev.type == pygame.QUIT:
+            if ev.type == pygame.QUIT :
                 pygame.quit()
+                sys.exit()
+
+            # resize window
+            if ev.type == pygame.VIDEORESIZE:
+                surface = pygame.display.set_mode((ev.w, ev.h), pygame.RESIZABLE)
+
+                # UPDATE WINDOW_HEIGHT AND WINDOW_WIDTH
+                WINDOW_HEIGHT, WINDOW_WIDTH = ev.h, ev.w
+                continue
+
            
             # checks if a mouse is clicked
             if ev.type == pygame.MOUSEBUTTONDOWN:
@@ -240,7 +299,7 @@ if __name__ == "__main__":
 
                        
                     # draw the interval name on the midpoint of the line
-                    midp_x, midp_y = (note_a.screen_pos[0] + note_b.screen_pos[0])/2, (note_a.screen_pos[1] + note_b.screen_pos[1])/2
+                    midp_x, midp_y = (note_a_pos[0] + note_b_pos[0])/2, (note_a_pos[1] + note_b_pos[1])/2
                     screen.blit(LABEL_FONT.render(predict_interval.get_full_name(), True, WHITE), (midp_x, midp_y-15))
 
                     # play interval
@@ -248,7 +307,7 @@ if __name__ == "__main__":
                     note_b.play_sound(1000)
 
                     # draw success or wrong text
-                    screen.blit(success_text, (755, 715))
+                    screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))
                 
 
                     # update screen
