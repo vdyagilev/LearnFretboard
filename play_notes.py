@@ -300,7 +300,9 @@ if __name__ == "__main__":
 
 
                     # play tone
-                    predict_note.play_sound(1000)
+                    min_play, max_play = 300, 1000
+                    random_play_len = lambda : random.randint(min_play, max_play)
+                    predict_note.play_sound(random_play_len)
 
                     # draw success or wrong text
                     screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))

@@ -14,7 +14,7 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-
+import random
 
 
 def button_at_pos(coord: tuple) -> str:
@@ -326,10 +326,11 @@ if __name__ == "__main__":
                     screen.blit(LABEL_FONT.render(predict_interval.get_full_name(), True, WHITE), (midp_x-50+side_margin, midp_y+vert_margin))
 
                     # play interval from a to b, then back from b to a
-                    play_len = 800
-                    note_a.play_sound(play_len)
-                    note_b.play_sound(play_len)
-                    note_a.play_sound(play_len)
+                    min_play, max_play = 300, 1000
+                    random_play_len = lambda : random.randint(min_play, max_play)
+                    note_a.play_sound(random_play_len())
+                    note_b.play_sound(random_play_len())
+                    note_a.play_sound(random_play_len())
 
                     # draw success or wrong text
                     screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))
