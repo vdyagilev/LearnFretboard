@@ -1,6 +1,6 @@
 # screen dimensions
-WINDOW_WIDTH =0.7* 1600
-WINDOW_HEIGHT =0.7* 1000
+WINDOW_WIDTH =int(0.7* 1600)
+WINDOW_HEIGHT =int(0.7* 1000)
 
 # default colours 
 WHITE = (255,255,255)
