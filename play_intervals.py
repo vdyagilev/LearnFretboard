@@ -53,6 +53,15 @@ def choose_interval(curr_stats, hist_stats):
 
     return random.choices(hist_stats, prob_dist, k=1)[0]
 
+# draw note names
+def draw_note_name(note):
+    note_pos = get_note_pos(note)
+    x, y = note_pos
+    if "/" in note.name:
+        screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-18, y-7))
+    else:
+        screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-4, y-7))
+
 
 # Run game
 if __name__ == "__main__":
@@ -109,6 +118,7 @@ if __name__ == "__main__":
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    
 
     # GAME LOOP
     curr_stats = {"num_correct": 0, "num_wrong": 0, "interval_history": []} # keep track of curr round metrics
@@ -216,7 +226,7 @@ if __name__ == "__main__":
         note_a_pos, note_b_pos = get_note_pos(note_a), get_note_pos(note_b)
 
         # draw the Interval connecting the notes
-        pygame.draw.line(screen, combine_colors(note_a.color, note_b.color), note_a_pos, note_b_pos, width=14)
+        pygame.draw.line(screen, LIGHT_GREY, note_a_pos, note_b_pos, width=14)
 
         # draw red box around note_a to tell direction
         x_a, y_a = note_a_pos
@@ -224,20 +234,8 @@ if __name__ == "__main__":
         pygame.draw.circle(screen, (239,185,95), (x_a, y_a), NOTE_RADIUS+9)
 
         # draw notes
-        pygame.draw.circle(screen, note_a.color, note_a_pos, NOTE_RADIUS)
-        pygame.draw.circle(screen, note_b.color, note_b_pos, NOTE_RADIUS)
-
-        # draw note names
-        def draw_note_name(note):
-            note_pos = get_note_pos(note)
-            x, y = note_pos
-            if "/" in note.name:
-                screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-18, y-7))
-            else:
-                screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-4, y-7))
-
-        draw_note_name(note_a)
-        draw_note_name(note_b)
+        pygame.draw.circle(screen, WHITE, note_a_pos, NOTE_RADIUS)
+        pygame.draw.circle(screen, WHITE, note_b_pos, NOTE_RADIUS)
 
         # get user input and do actions
 
@@ -296,7 +294,26 @@ if __name__ == "__main__":
                         # create failure text
                         success_text = TITLE_FONT.render('WRONG', True, FAILURE_RED)
 
-                       
+
+                    # REVEAL TRUE NOTES
+                                
+                    note_a_pos, note_b_pos = get_note_pos(note_a), get_note_pos(note_b)
+
+                    # draw the Interval connecting the notes
+                    pygame.draw.line(screen, combine_colors(note_a.color, note_b.color), note_a_pos, note_b_pos, width=14)
+
+                    # draw red box around note_a to tell direction
+                    x_a, y_a = note_a_pos
+                    pygame.draw.circle(screen, (235,155,65), (x_a, y_a), NOTE_RADIUS+12)
+                    pygame.draw.circle(screen, (239,185,95), (x_a, y_a), NOTE_RADIUS+9)
+
+                    # draw notes
+                    pygame.draw.circle(screen, note_a.color, note_a_pos, NOTE_RADIUS)
+                    pygame.draw.circle(screen, note_b.color, note_b_pos, NOTE_RADIUS)
+                    
+                    draw_note_name(note_a)
+                    draw_note_name(note_b)
+
                     # draw the interval name on the midpoint of the line
                     midp_x, midp_y = (note_a_pos[0] + note_b_pos[0])/2, (note_a_pos[1] + note_b_pos[1])/2
                     screen.blit(LABEL_FONT.render(predict_interval.get_full_name(), True, WHITE), (midp_x, midp_y-15))
@@ -304,7 +321,6 @@ if __name__ == "__main__":
                     # play interval from a to b, then back from b to a
                     play_len = 800
                     note_a.play_sound(play_len)
-                    note_b.play_sound(play_len)
                     note_b.play_sound(play_len)
                     note_a.play_sound(play_len)
 
