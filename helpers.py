@@ -96,9 +96,12 @@ def simple_linspace(lower, upper, length):
     return [lower + x*(upper-lower)/(length-1) for x in range(length)]
 
 
-def get_note_pos(pos_list, str_idx, fret_idx):
-    frets_per_str = len(NOTE_POS[0])
+def get_note_pos(notes_list, pos_list, note):
+    idx = 0
+    for n in notes_list:
+        if notes_equal(n, note):
+            return pos_list[idx]
+        idx += 1
+    return
 
-    global_idx = (str_idx * frets_per_str) + fret_idx
-    
-    return pos_list[global_idx]
+

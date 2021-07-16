@@ -13,6 +13,14 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 
+
+def get_all_notes_list():
+    all_notes = []
+    for string_idx, notes_lst in NOTE_POS.items():
+        for fret_idx, note_name in enumerate(notes_lst): 
+            all_notes.append(Note(note_name, string_idx, fret_idx))
+    return all_notes
+
 def button_at_pos(coord: tuple) -> str:
     """Return which button is located at (x,y)=coord, or "" if none"""
     num_cols = 12
@@ -72,6 +80,8 @@ if __name__ == "__main__":
 
         # save initial data list to file
         save_data(saved_data, SAVED_NOTES_FILE)
+
+    ALL_NOTES = get_all_notes_list()
 
     # init pygame
     pygame.init()
@@ -188,7 +198,7 @@ if __name__ == "__main__":
         
         # draw note names
         def draw_note_name(note):
-            note_pos = get_note_pos(all_note_pos, note.string_idx, note.fret_idx)
+            note_pos = get_note_pos(ALL_NOTES, all_note_pos, note)
             x, y = note_pos
             if "/" in note.name:
                 screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-18, y-7))
@@ -196,8 +206,8 @@ if __name__ == "__main__":
                 screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-4, y-7))
 
         if last_note:
-            last_note_pos = get_note_pos(all_note_pos, last_note.string_idx, last_note.fret_idx)
-        predict_note_pos = get_note_pos(all_note_pos, predict_note.string_idx, predict_note.fret_idx)
+            last_note_pos  = get_note_pos(ALL_NOTES, all_note_pos, last_note)
+        predict_note_pos  = get_note_pos(ALL_NOTES, all_note_pos, predict_note)
 
         # draw interval from last note, if last note exists and is not equal to this note
         if last_note and not notes_equal(last_note, predict_note):
