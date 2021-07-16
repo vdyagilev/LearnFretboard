@@ -39,7 +39,7 @@ def button_at_pos(coord: tuple) -> str:
     return ""
 
 
-def choose_note(curr_stats, hist_stats):
+def choose_note(curr_stats, saved_data):
     """Returns a note for user to predict. Returns with probability based on past success"""
     total_pred = curr_stats["num_correct"] + curr_stats["num_wrong"]
 
@@ -48,16 +48,16 @@ def choose_note(curr_stats, hist_stats):
         return curr_stats["note_history"][-1]
     
     # get zero-one normalized prob dist based on time and accuracy
-    prob_dist = calc_prob_dist_guessmaker(hist_stats)
+    prob_dist = calc_prob_dist_guessmaker(saved_data)
 
     # add small number to ensure zero one is not zero anymore
     SMALL_NUM = (1/78)
     prob_dist = [x + SMALL_NUM for x in prob_dist]
 
     if RANDOM_NOT_DYNAMIC_PICKING:
-        return random.choice(hist_stats)
+        return random.choice(saved_data)
 
-    return random.choices(hist_stats, prob_dist, k=1)[0]
+    return random.choices(saved_data, prob_dist, k=1)[0]
         
 
 # Run game

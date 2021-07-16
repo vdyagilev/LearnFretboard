@@ -1,9 +1,10 @@
 from constants import *
-from helpers import get_interval_name, reject_outliers
+from helpers import get_interval_name, reject_outliers, notes_equal
 
 import pygame
 import numpy
 import numpy as np
+
 
 # A Guess is something that has a real string value and a users prediction of it, and the time it took.
 class Guess:
@@ -103,6 +104,16 @@ class Note(GuessMaker):
         return f'({self.name}) string: {self.string_idx} fret: {self.fret_idx}'
 
 
+def get_all_notes_list():
+    all_notes = []
+    for string_idx, notes_lst in NOTE_POS.items():
+        for fret_idx, note_name in enumerate(notes_lst): 
+            all_notes.append(Note(note_name, string_idx, fret_idx))
+    return all_notes
+
+ALL_NOTES = get_all_notes_list()
+
+
 
 class Interval(GuessMaker):
     """Represents an interval between Note a and Note b on the fretboard"""
@@ -113,7 +124,7 @@ class Interval(GuessMaker):
         # basic details
         self.note_a = note_a
         self.note_b = note_b
-
+        
 
     def __str__(self):
         name = get_interval_name(self.note_a, self.note_b)
@@ -127,3 +138,18 @@ class Interval(GuessMaker):
         idx = INTERVAL_NAMES.index(self.get_full_name())
         return SHORT_INTERVAL_NAMES[idx]
 
+
+    def get_distance(self) -> int:
+        """Returns the number of half-steps between note_a to note_b upwards"""
+        idx_a, idx_b  = -1, -1
+        for i, note in enumerate(ALL_NOTES):
+            if notes_equal(note, self.note_a):
+                idx_a = i
+
+            if idx_a != -1 and notes_equal(note, self.note_b):
+                idx_b = i
+
+        half_steps = abs(idx_b - idx_a)
+
+        return half_steps
+            

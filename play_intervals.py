@@ -40,9 +40,8 @@ def button_at_pos(coord: tuple) -> str:
                 return INTERVAL_NAMES[i]
     
     return ""
-
-
-def choose_interval(curr_stats, hist_stats):
+    
+def choose_interval(curr_stats, saved_data):
     """Returns an interval for user to predict. Returns with probability based on past success"""
     total_pred = curr_stats["num_correct"] + curr_stats["num_wrong"]
 
@@ -51,17 +50,25 @@ def choose_interval(curr_stats, hist_stats):
         return curr_stats["interval_history"][-1]
     
     # get zero-one normalized prob dist based on time and accuracy
-    prob_dist = calc_prob_dist_guessmaker(hist_stats)
+    prob_dist = calc_prob_dist_guessmaker(saved_data)
 
     # add small number to ensure zero one is not zero anymore
     SMALL_NUM = (1/6084) # there are 6084 unique intervals
 
     prob_dist = [x + SMALL_NUM for x in prob_dist]
 
-    if RANDOM_NOT_DYNAMIC_PICKING:
-        return random.choice(hist_stats)
 
-    return random.choices(hist_stats, prob_dist, k=1)[0]
+    # Select interval with length BELOW required (just sample randomly until a hit)
+    choice = None
+    while choice is None or choice.get_distance() > MAX_INTERVAL_DISTANCE:
+        # select either randomly or with probability based on learning
+        if RANDOM_NOT_DYNAMIC_PICKING:
+            choice = random.choice(saved_data)
+
+        else:
+            choice = random.choices(saved_data, prob_dist, k=1)[0]
+
+    return choice
 
 # draw note names
 def draw_note_name(note):
