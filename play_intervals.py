@@ -1,7 +1,7 @@
 from play_notes import get_interval_name
 import os
 from structs import Guess, Interval, Note
-from helpers import calc_prob_dist_guessmaker, combine_colors, intervals_equal, load_data, notes_equal, save_data, simple_linspace, string_idx_to_letter, zero_one_norm
+from helpers import calc_prob_dist_guessmaker, combine_colors, intervals_equal, load_data,get_note_pos, notes_equal, save_data, simple_linspace, string_idx_to_letter, zero_one_norm
 from constants import *
 
 from numpy.lib.polynomial import _poly_dispatcher
@@ -58,7 +58,7 @@ def choose_interval(curr_stats, hist_stats):
 
 # draw note names
 def draw_note_name(note):
-    note_pos = get_note_pos(note)
+    note_pos = get_note_pos(all_note_pos, note.string_idx, note.fret_idx)
     x, y = note_pos
     if "/" in note.name:
         screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-18, y-7))
@@ -216,18 +216,8 @@ if __name__ == "__main__":
                 all_note_pos.append( (x, y) ) 
         
             
-        def get_note_pos(note):
-            # find the location of note in a ordered list of all note fqs then return the coordinate for that idx from all_note_pos
-            idx = 0
-            curr_note_fq = SORTED_NOTE_FREQ[idx]
-            while curr_note_fq != note.frequency:
-                idx += 1
-                curr_note_fq = SORTED_NOTE_FREQ[idx]
 
-            return all_note_pos[idx]
-
-
-        note_a_pos, note_b_pos = get_note_pos(note_a), get_note_pos(note_b)
+        note_a_pos, note_b_pos = get_note_pos(all_note_pos, note_a.string_idx, note_b.fret_idx), get_note_pos(all_note_pos, note_b.string_idx, note_b.fret_idx)
 
         # draw the Interval connecting the notes
         pygame.draw.line(screen, LIGHT_GREY, note_a_pos, note_b_pos, width=14)
@@ -301,7 +291,7 @@ if __name__ == "__main__":
 
                     # REVEAL TRUE NOTES
                                 
-                    note_a_pos, note_b_pos = get_note_pos(note_a), get_note_pos(note_b)
+                    note_a_pos, note_b_pos = get_note_pos(all_note_pos, note_a.string_idx, note_b.fret_idx), get_note_pos(all_note_pos, note_b.string_idx, note_b.fret_idx)
 
                     # draw the Interval connecting the notes
                     pygame.draw.line(screen, combine_colors(note_a.color, note_b.color), note_a_pos, note_b_pos, width=14)

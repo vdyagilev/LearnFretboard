@@ -73,4 +73,4 @@ GUESS_CACHE_LEN = 10 # how many guesses stores in guessmaker cache
 GUESS_OUTLIER_AVG = 3 # how many guesses are used to detect outlier entries 
 
 # if true then notes and intervals are randomly chosen, if false then follows eq.
-RANDOM_NOT_DYNAMIC_PICKING = True
+RANDOM_NOT_DYNAMIC_PICKING = False

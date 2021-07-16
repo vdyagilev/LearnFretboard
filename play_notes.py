@@ -1,5 +1,5 @@
 from structs import Guess, Note
-from helpers import calc_prob_dist_guessmaker, get_interval_name, load_data, notes_equal, save_data, simple_linspace, string_idx_to_letter, zero_one_norm
+from helpers import calc_prob_dist_guessmaker, get_interval_name, load_data, notes_equal, save_data, simple_linspace, string_idx_to_letter, zero_one_norm, get_note_pos
 import os
 from constants import *
 
@@ -184,20 +184,11 @@ if __name__ == "__main__":
             
                 # just append (x, y) coord to a LIST of points
                 all_note_pos.append( (x, y) ) 
-        
-        def get_note_pos(note):
-            # find the location of note in a ordered list of all note fqs then return the coordinate for that idx from all_note_pos
-            idx = 0
-            curr_note_fq = SORTED_NOTE_FREQ[idx]
-            while curr_note_fq != note.frequency:
-                idx += 1
-                curr_note_fq = SORTED_NOTE_FREQ[idx]
-
-            return all_note_pos[idx]
+    
         
         # draw note names
         def draw_note_name(note):
-            note_pos = get_note_pos(note)
+            note_pos = get_note_pos(all_note_pos, note.string_idx, note.fret_idx)
             x, y = note_pos
             if "/" in note.name:
                 screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-18, y-7))
@@ -205,8 +196,8 @@ if __name__ == "__main__":
                 screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-4, y-7))
 
         if last_note:
-            last_note_pos = get_note_pos(last_note)
-        predict_note_pos = get_note_pos(predict_note)
+            last_note_pos = get_note_pos(all_note_pos, last_note.string_idx, last_note.fret_idx)
+        predict_note_pos = get_note_pos(all_note_pos, predict_note.string_idx, predict_note.fret_idx)
 
         # draw interval from last note, if last note exists and is not equal to this note
         if last_note and not notes_equal(last_note, predict_note):

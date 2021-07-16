@@ -94,3 +94,11 @@ def combine_colors(a, b):
 def simple_linspace(lower, upper, length):
     """linear interpolation between two points lower and upper. length amount of points returned. Includes right endpoint"""
     return [lower + x*(upper-lower)/(length-1) for x in range(length)]
+
+
+def get_note_pos(pos_list, str_idx, fret_idx):
+    frets_per_str = len(NOTE_POS[0])
+
+    global_idx = (str_idx * frets_per_str) + fret_idx
+    
+    return pos_list[global_idx]
