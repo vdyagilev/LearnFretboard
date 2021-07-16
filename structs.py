@@ -146,7 +146,7 @@ class Interval(GuessMaker):
             if notes_equal(note, self.note_a):
                 idx_a = i
 
-            if idx_a != -1 and notes_equal(note, self.note_b):
+            if notes_equal(note, self.note_b):
                 idx_b = i
 
         half_steps = abs(idx_b - idx_a)

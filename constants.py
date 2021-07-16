@@ -76,4 +76,4 @@ GUESS_OUTLIER_AVG = 3 # how many guesses are used to detect outlier entries
 RANDOM_NOT_DYNAMIC_PICKING = False
 
 # Only show Intervals with half-step distance less than 
-MAX_INTERVAL_DISTANCE = 24
+MAX_INTERVAL_DISTANCE = 13
