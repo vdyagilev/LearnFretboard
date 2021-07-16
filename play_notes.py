@@ -47,7 +47,7 @@ def choose_note(curr_stats, hist_stats):
     prob_dist = [x + SMALL_NUM for x in prob_dist]
 
     if RANDOM_NOT_DYNAMIC_PICKING:
-        prob_dist = [SMALL_NUM for x in prob_dist]
+        return random.choice(hist_stats)
 
     return random.choices(hist_stats, prob_dist, k=1)[0]
         

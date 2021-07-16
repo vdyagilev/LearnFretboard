@@ -52,7 +52,7 @@ def choose_interval(curr_stats, hist_stats):
     prob_dist = [x + SMALL_NUM for x in prob_dist]
 
     if RANDOM_NOT_DYNAMIC_PICKING:
-        prob_dist = [SMALL_NUM for x in prob_dist]
+        return random.choice(hist_stats)
 
     return random.choices(hist_stats, prob_dist, k=1)[0]
 
@@ -78,21 +78,22 @@ if __name__ == "__main__":
     except:
         # create new saved data dict containing an Interval class instance for each possible interval on the fretboard (first octave part only)
         saved_data = []
+        count = 0
         # iterate thru every pair of notes
         for string_idx_a, notes_lst_a in NOTE_POS.items():
-            for string_idx_b, notes_lst_b in NOTE_POS.items():
-
                 for fret_idx_a, note_name_a in enumerate(notes_lst_a):
-                    for fret_idx_b, note_name_b in enumerate(notes_lst_b):
-                        # init the two Note classes
-                        note_a = Note(note_name_a, string_idx_a, fret_idx_a)
-                        note_b = Note(note_name_b, string_idx_b, fret_idx_b)
+                    for string_idx_b, notes_lst_b in NOTE_POS.items():
+                        for fret_idx_b, note_name_b in enumerate(notes_lst_b):
+                            # init the two Note classes
+                            note_a = Note(note_name_a, string_idx_a, fret_idx_a)
+                            note_b = Note(note_name_b, string_idx_b, fret_idx_b)
 
-                        # init the Interval class joining them
-                        interval = Interval(note_a, note_b)
+                            # init the Interval class joining them
+                            interval = Interval(note_a, note_b)
+                    
+                            saved_data.append(interval)
 
-                        saved_data.append(interval)
-
+        
         # save initial data list to file
         save_data(saved_data, SAVED_INTERVALS_FILE)
 
@@ -358,9 +359,6 @@ if __name__ == "__main__":
                         for i, interval in enumerate(sorted_data):
                             print(f'{i} {interval.get_short_name()} note a: {interval.note_a.name} note b: {interval.note_b.name} accur: {interval.get_accuracy()} avg time: {interval.get_avg_guess_time()}' )
 
-                        unseen_intervals = list(filter(lambda x: len(x.guesses) == 0, sorted_data))
-                        if unseen_intervals:
-                            print(f'{len(unseen_intervals)} still unseen.')
                         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
                         # I COMMENED (TURNED OFF) THE BELOW DRAW AND PRINT

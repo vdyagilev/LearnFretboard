@@ -100,7 +100,7 @@ class Note(GuessMaker):
         sound.stop()
 
     def __str__(self):
-        return f'({self.name}) string: {self.string_idx} fret: {self.fret_idx} screen_coord: {self.screen_pos} num_corr: {self.num_correct} total_guess: {self.total_guesses}'
+        return f'({self.name}) string: {self.string_idx} fret: {self.fret_idx}'
 
 
 
