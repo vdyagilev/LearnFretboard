@@ -59,7 +59,7 @@ def get_interval_name(note_a, note_b) -> str:
     # num_half_steps is the distance between the note_a to note_b when note_b is higher in pitch
     return INTERVAL_NAMES[num_half_steps]
 
-def calc_prob_dist_guessmaker(guessmaker_list):
+def calc_prob_dist_guessmaker(guessmaker_list, init_weight=100):
     # return a random note with probability distribution of the inverse of their prediction accuracy (prefer inaccurate notes)
     # and their avg time 
 
@@ -67,14 +67,15 @@ def calc_prob_dist_guessmaker(guessmaker_list):
     for gm in guessmaker_list:
         # before any guesses (initialized)
         if len(gm.guesses) == 0:
-            prob_dist.append(100)
+            prob_dist.append(2*init_weight)
 
         else:
             # inverse of guess acc ([0,1]) + note guess time in seconds
             if gm.get_accuracy() == 0:
-                a = 100
+                a = init_weight
             else:
                 a = (1/gm.get_accuracy())
+
             b = gm.get_avg_guess_time()
             prob_dist.append( a + b)
     
