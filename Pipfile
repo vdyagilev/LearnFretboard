@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pickle = "*"
+finta = "==1.3"
+imageio = "==2.9.0"
+matplotlib = "==3.4.2"
+moviepy = "==1.0.3"
+numpy = "==1.21.0"
+pandas = "==1.2.5"
+pygame = "==2.0.1"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
