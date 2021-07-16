@@ -312,7 +312,8 @@ if __name__ == "__main__":
                     
                     # update screen
                     pygame.display.update()
-                    pygame.time.delay(1000 * DISPLAY_ANSWER_TIME)
+                    DISPLAY_ANSWER_TIME = random.randint(500, 1500)
+                    pygame.time.delay(DISPLAY_ANSWER_TIME)
 
 
                     # save to file
