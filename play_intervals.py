@@ -347,7 +347,7 @@ if __name__ == "__main__":
                     screen.blit(LABEL_FONT.render(predict_interval.get_full_name(), True, WHITE), (midp_x-50+side_margin, midp_y+vert_margin))
 
                     # play interval from a to b, then back from b to a
-                    min_play, max_play = 300, 1000
+                    min_play, max_play = 800, 2200
                     random_play_len = lambda : random.randint(min_play, max_play)
                     note_a.play_sound(random_play_len())
                     note_b.play_sound(random_play_len())
