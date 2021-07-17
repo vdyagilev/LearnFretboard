@@ -53,7 +53,7 @@ def choose_interval(curr_stats, saved_data):
     prob_dist = calc_prob_dist_guessmaker(saved_data)
 
     # add small number to ensure zero one is not zero anymore
-    SMALL_NUM = (1/6084) # there are 6084 unique intervals
+    SMALL_NUM = (1/6084)/5 # there are 6084 unique intervals
 
     prob_dist = [x + SMALL_NUM for x in prob_dist]
 
@@ -119,6 +119,9 @@ if __name__ == "__main__":
 
     # init sound library
     pygame.mixer.init(SAMPLE_RATE,-16,2,512)
+
+    # init wrong sound
+    error_sound = pygame.mixer.Sound('error.ogg')
 
     # change window title
     pygame.display.set_caption('LearnFretboard')
@@ -302,6 +305,10 @@ if __name__ == "__main__":
                     
                     # record incorrect guess
                     else:
+                        if NO_WRONG:
+                            error_sound.play()
+                            continue
+                        
                         curr_stats["num_wrong"] += 1
                         
                         # create failure text

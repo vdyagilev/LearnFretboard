@@ -51,7 +51,7 @@ def choose_note(curr_stats, saved_data):
     prob_dist = calc_prob_dist_guessmaker(saved_data)
 
     # add small number to ensure zero one is not zero anymore
-    SMALL_NUM = (1/78)
+    SMALL_NUM = (1/78)/5
     prob_dist = [x + SMALL_NUM for x in prob_dist]
 
     if RANDOM_NOT_DYNAMIC_PICKING:
@@ -88,6 +88,9 @@ if __name__ == "__main__":
 
     # init sound library
     pygame.mixer.init(SAMPLE_RATE,-16,2,512)
+
+    # init wrong sound
+    error_sound = pygame.mixer.Sound('error.ogg')
 
     # change window title
     pygame.display.set_caption('LearnFretboard')
@@ -285,6 +288,10 @@ if __name__ == "__main__":
                         loc_text = BUTTON_FONT.render(f'{string_idx_to_letter(predict_note.string_idx)} string {predict_note.fret_idx} fret', True, SUCCESS_GREEN)
                     
                     else:
+                        if NO_WRONG:
+                            error_sound.play()
+                            continue
+
                         curr_stats["num_wrong"] += 1
 
                          # create failure text
