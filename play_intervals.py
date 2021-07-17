@@ -251,7 +251,7 @@ if __name__ == "__main__":
 
         # draw notes
         pygame.draw.circle(screen, WHITE, note_a_pos, NOTE_RADIUS)
-        pygame.draw.circle(screen, WHITE, note_b_pos, NOTE_RADIUS)
+        pygame.draw.circle(screen,(235,155,65), note_b_pos, NOTE_RADIUS)
 
         # get user input and do actions
 
