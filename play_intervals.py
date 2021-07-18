@@ -347,8 +347,8 @@ if __name__ == "__main__":
                     screen.blit(LABEL_FONT.render(predict_interval.get_full_name(), True, WHITE), (midp_x-50+side_margin, midp_y+vert_margin))
 
                     # play interval from a to b, then back from b to a
-                    play_lens = [500, 750, 1000, 1500, 2000]
-                    random_play_len = lambda : random.choice(play_lens)
+                    min_len, max_len = 600, 800
+                    random_play_len = lambda : random.randint(min_len, max_len)
                     note_a.play_sound(random_play_len())
                     note_b.play_sound(random_play_len())
                     note_a.play_sound(random_play_len())
@@ -359,7 +359,7 @@ if __name__ == "__main__":
 
                     # update screen
                     pygame.display.update()
-                    DISPLAY_ANSWER_TIME = random.randint(800, 2200)
+                    DISPLAY_ANSWER_TIME = random.randint(1600, 1800)
                     pygame.time.delay(DISPLAY_ANSWER_TIME)
 
 
