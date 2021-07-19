@@ -80,3 +80,6 @@ MAX_INTERVAL_DISTANCE = 100
 
 # If NO_WRONG = True then your mistakes won't be registerd
 NO_WRONG = True
+
+# Plays harmonic intervals over melodic intervals probability
+HARMONIC_INTERVAL_PROB = 0.7
