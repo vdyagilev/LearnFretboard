@@ -305,11 +305,11 @@ if __name__ == "__main__":
                     
                     # record incorrect guess
                     else:
+                        curr_stats["num_wrong"] += 1
+                        
                         if NO_WRONG:
                             error_sound.play()
                             continue
-                        
-                        curr_stats["num_wrong"] += 1
                         
                         # create failure text
                         success_text = TITLE_FONT.render('WRONG', True, FAILURE_RED)
