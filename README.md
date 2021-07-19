@@ -37,6 +37,9 @@ Playing *Learn Intervals*
 python play_intervals.
 ```
 
+Changing settings and properties. Colours, timing, etc.
+All variables are found and can be changed in ```constants.py```.
+
 ## Local Saved Data
 
 Your accuraries for every note and interval is stored in /saved_data/ as `.pickle` files. Delete this directory to restart progress.
