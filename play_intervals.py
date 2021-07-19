@@ -363,11 +363,6 @@ if __name__ == "__main__":
                     else:
                         play_notes_harmonic(note_a, note_b, sum(rand_lens))
 
-                   
-                    # freeze screen
-                    pygame.time.delay(sum(rand_lens))
-
-
                     # # draw success or wrong text
                     # screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))
                     # pygame.display.update()

@@ -319,9 +319,6 @@ if __name__ == "__main__":
                     play_len = random_play_len()
                     predict_note.play_sound(play_len)
 
-                    # freeze screen
-                    pygame.time.delay(play_len)
-
                     # # draw success or wrong text
                     # screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))
                     # pygame.display.update()
