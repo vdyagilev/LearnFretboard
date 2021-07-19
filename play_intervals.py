@@ -354,7 +354,7 @@ if __name__ == "__main__":
                     random_play_len = lambda : random.randint(min_len, max_len)
                     # 50% to play melodic interval, 50% harmonic
                     rand_lens = [random_play_len() for _ in range(3)]
-                    if random.random() < HARMONIC_INTERVAL_PROB:
+                    if random.random() > HARMONIC_INTERVAL_PROB:
                         # play melodic
                         note_a.play_sound(rand_lens[0])
                         note_b.play_sound(rand_lens[1])
