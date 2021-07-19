@@ -1,7 +1,7 @@
 from play_notes import get_interval_name
 import os
 from structs import Guess, Interval, Note
-from helpers import calc_prob_dist_guessmaker, combine_colors, intervals_equal, load_data,get_note_pos, notes_equal, save_data, simple_linspace, string_idx_to_letter, zero_one_norm
+from helpers import calc_prob_dist_guessmaker, combine_colors, intervals_equal, load_data,get_note_pos, make_pygame_sound_from_freq, notes_equal, play_notes_harmonic, save_data, simple_linspace, string_idx_to_letter, zero_one_norm
 from constants import *
 
 from numpy.lib.polynomial import _poly_dispatcher
@@ -349,9 +349,14 @@ if __name__ == "__main__":
                     # play interval from a to b, then back from b to a
                     min_len, max_len = 600, 800
                     random_play_len = lambda : random.randint(min_len, max_len)
-                    note_a.play_sound(random_play_len())
-                    note_b.play_sound(random_play_len())
-                    note_a.play_sound(random_play_len())
+                    # 50% to play melodic interval, 50% harmonic
+                    if random.random() < 0.5:
+                        # play melodic
+                        note_a.play_sound(random_play_len())
+                        note_b.play_sound(random_play_len())
+                        note_a.play_sound(random_play_len())
+                    else:
+                        play_notes_harmonic(note_a, note_b, 2*random_play_len())
 
                     # draw success or wrong text
                     screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))

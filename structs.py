@@ -1,5 +1,5 @@
 from constants import *
-from helpers import get_interval_name, reject_outliers, notes_equal
+from helpers import get_interval_name, make_pygame_sound_from_freq, reject_outliers, notes_equal
 
 import pygame
 import numpy
@@ -93,9 +93,7 @@ class Note(GuessMaker):
 
 
     def play_sound(self, millisecs):
-        arr = numpy.array([4096 * numpy.sin(2.0 * numpy.pi * self.frequency * x / SAMPLE_RATE) for x in range(0, SAMPLE_RATE)]).astype(numpy.int16)
-        arr2 = numpy.c_[arr,arr]
-        sound = pygame.sndarray.make_sound(arr2)
+        sound = make_pygame_sound_from_freq(self.frequency)
         sound.play(-1)
         pygame.time.delay(millisecs)
         sound.stop()
