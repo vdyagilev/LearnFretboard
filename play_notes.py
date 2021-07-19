@@ -309,19 +309,23 @@ if __name__ == "__main__":
                     #     screen.blit(LABEL_FONT.render(interval_name, True, WHITE), (midp_x, midp_y-15))
 
 
-                    # play tone
-                    min_play, max_play = 300, 1000
-                    random_play_len = lambda : random.randint(min_play, max_play)
-                    predict_note.play_sound(random_play_len())
-
-                    # draw success or wrong text
-                    screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))
                     
                     # update screen
                     pygame.display.update()
-                    DISPLAY_ANSWER_TIME = random.randint(500, 1500)
-                    pygame.time.delay(DISPLAY_ANSWER_TIME)
+                
+                    # play tone
+                    min_play, max_play = 700, 2500
+                    random_play_len = lambda : random.randint(min_play, max_play)
+                    play_len = random_play_len()
+                    predict_note.play_sound(play_len)
 
+                    # freeze screen
+                    pygame.time.delay(play_len)
+
+                    # # draw success or wrong text
+                    # screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))
+                    # pygame.display.update()
+                    
 
                     # save to file
                     save_data(saved_data, SAVED_NOTES_FILE)

@@ -346,27 +346,31 @@ if __name__ == "__main__":
                     
                     screen.blit(LABEL_FONT.render(predict_interval.get_full_name(), True, WHITE), (midp_x-50+side_margin, midp_y+vert_margin))
 
+                    # update screen
+                    pygame.display.update()
+
                     # play interval from a to b, then back from b to a
                     min_len, max_len = 600, 800
                     random_play_len = lambda : random.randint(min_len, max_len)
                     # 50% to play melodic interval, 50% harmonic
                     if random.random() < 0.5:
                         # play melodic
-                        note_a.play_sound(random_play_len())
-                        note_b.play_sound(random_play_len())
-                        note_a.play_sound(random_play_len())
+                        rand_lens = [random_play_len() for _ in range(3)]
+                        note_a.play_sound(rand_lens[0])
+                        note_b.play_sound(rand_lens[1])
+                        note_a.play_sound(rand_lens[2])
+
                     else:
-                        play_notes_harmonic(note_a, note_b, 2*random_play_len())
+                        play_notes_harmonic(note_a, note_b, sum(rand_lens))
 
-                    # draw success or wrong text
-                    screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))
-                
+                   
+                    # freeze screen
+                    pygame.time.delay(sum(rand_lens))
 
-                    # update screen
-                    pygame.display.update()
-                    DISPLAY_ANSWER_TIME = random.randint(1600, 1800)
-                    pygame.time.delay(DISPLAY_ANSWER_TIME)
 
+                    # # draw success or wrong text
+                    # screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))
+                    # pygame.display.update()
 
                     # save to file
                     save_data(saved_data, SAVED_INTERVALS_FILE)
