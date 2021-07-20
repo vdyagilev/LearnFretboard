@@ -64,7 +64,7 @@ def choose_interval(curr_stats, saved_data):
     choice = None
     while choice is None \
         or choice.get_distance() > MAX_INTERVAL_DISTANCE \
-        or choice.get_fret_width() > MAX_FRET_WIDTH \
+        or choice.get_fret_width() > (MAX_FRET_WIDTH-1) \
         or choice.get_full_name() not in ACTIVE_INTERVALS: 
 
         # select either randomly or with probability based on learning
