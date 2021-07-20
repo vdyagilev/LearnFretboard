@@ -59,8 +59,14 @@ def choose_interval(curr_stats, saved_data):
 
 
     # Select interval with length BELOW required (just sample randomly until a hit)
+    # filter by interval distance 
+    # filter by specific interval
     choice = None
-    while choice is None or choice.get_distance() > MAX_INTERVAL_DISTANCE:
+    while choice is None \
+        or choice.get_distance() > MAX_INTERVAL_DISTANCE \
+        or choice.get_fret_width() > MAX_FRET_WIDTH \
+        or choice.get_full_name() not in ACTIVE_INTERVALS: 
+
         # select either randomly or with probability based on learning
         if RANDOM_NOT_DYNAMIC_PICKING:
             choice = random.choice(saved_data)

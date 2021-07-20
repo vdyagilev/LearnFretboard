@@ -77,9 +77,13 @@ RANDOM_NOT_DYNAMIC_PICKING = False
 
 # Only show Intervals with half-step distance less than 
 MAX_INTERVAL_DISTANCE = 100
+MAX_FRET_WIDTH = 5
 
 # If NO_WRONG = True then your mistakes won't be registerd
 NO_WRONG = True
 
 # Plays harmonic intervals over melodic intervals probability
-HARMONIC_INTERVAL_PROB = 0.7
+HARMONIC_INTERVAL_PROB = 0.5
+
+# Shows only intervals listed here
+ACTIVE_INTERVALS = INTERVAL_NAMES

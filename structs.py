@@ -123,7 +123,6 @@ class Interval(GuessMaker):
         self.note_a = note_a
         self.note_b = note_b
         
-
     def __str__(self):
         name = get_interval_name(self.note_a, self.note_b)
         return f'({name})\n    Note A: {str(self.note_a)}\n    Note B: {str(self.note_b)}'
@@ -151,3 +150,8 @@ class Interval(GuessMaker):
 
         return half_steps
             
+    def get_fret_width(self) -> int:
+        """Returns the number of half-steps width wise between note a and b. aka fret width. 
+        note: common practice is 5 for chords and caged
+        """
+        return abs(self.note_a.fret_idx - self.note_b.fret_idx)
