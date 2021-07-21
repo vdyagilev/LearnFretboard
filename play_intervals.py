@@ -217,6 +217,7 @@ if __name__ == "__main__":
                 bngd_color = BUTTON_BLUE
             else:
                 bngd_color = BUTTON_BLUE_GREY
+                
 
             pygame.draw.circle(screen, bngd_color, coord, BUTTON_RADIUS)
 

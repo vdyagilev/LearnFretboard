@@ -164,12 +164,17 @@ if __name__ == "__main__":
 
             # draw colored circle for note
             pygame.draw.circle(screen, COLORS[note_name], coord, BUTTON_RADIUS)
+
+            if is_light_color(note.color):
+                text_color = DARK_GREY
+            else:
+                text_color = WHITE
             
             # render note names, sharps/flats are larger so shift them differently
             if "/" in note_name:
-                screen.blit(BUTTON_FONT.render(note_name, True, WHITE), (coord[0]-18, coord[1]-7))
+                screen.blit(BUTTON_FONT.render(note_name, True, text_color), (coord[0]-18, coord[1]-7))
             else:
-                screen.blit(BUTTON_FONT.render(note_name, True, WHITE), (coord[0]-5, coord[1]-7))
+                screen.blit(BUTTON_FONT.render(note_name, True, text_color), (coord[0]-5, coord[1]-7))
 
         # draw note to predict
         start_time = time.time()

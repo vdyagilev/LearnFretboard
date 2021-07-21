@@ -135,7 +135,7 @@ def is_light_color(rgb) -> bool:
     # https://stackoverflow.com/questions/22603510/is-this-possible-to-detect-a-colour-is-a-light-or-dark-colour
     r, g, b = rgb
     hsp = math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
-    if (hsp>127.5):
+    if (hsp>170):
         return True
     else:
         return False
