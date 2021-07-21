@@ -297,8 +297,9 @@ if __name__ == "__main__":
                         loc_text = BUTTON_FONT.render(f'{string_idx_to_letter(predict_note.string_idx)} string {predict_note.fret_idx} fret', True, SUCCESS_GREEN)
                     
                     else:
+                        error_sound.play()
+                        
                         if NO_WRONG:
-                            error_sound.play()
                             continue
 
                         curr_stats["num_wrong"] += 1

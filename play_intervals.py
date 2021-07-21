@@ -319,8 +319,9 @@ if __name__ == "__main__":
                     
                     # record incorrect guess
                     else:
+                        error_sound.play()
+                        
                         if NO_WRONG:
-                            error_sound.play()
                             continue
                         
                         curr_stats["num_wrong"] += 1

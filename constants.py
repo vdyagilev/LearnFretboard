@@ -80,7 +80,7 @@ MAX_INTERVAL_DISTANCE = 100
 MAX_FRET_WIDTH = 5
 
 # If NO_WRONG = True then your mistakes won't be registerd
-NO_WRONG = True
+NO_WRONG = False
 
 # Plays harmonic intervals over melodic intervals probability
 HARMONIC_INTERVAL_PROB = 0.5
