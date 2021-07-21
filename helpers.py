@@ -125,3 +125,4 @@ def play_notes_harmonic(note_a, note_b, millisecs):
 
     sound_a.stop()
     sound_b.stop()
+

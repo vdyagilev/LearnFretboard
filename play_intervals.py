@@ -76,15 +76,23 @@ def choose_interval(curr_stats, saved_data):
 
     return choice
 
-# draw note names
-def draw_note_name(note):
+ # draw note names
+def draw_note_name(note, random_sharp_flat: bool):
     note_pos = get_note_pos(ALL_NOTES, all_note_pos, note)
     x, y = note_pos
     if "/" in note.name:
-        screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-18, y-7))
+        if random_sharp_flat:
+            both_note_names = note.name.split("/")
+
+            random.seed(len(curr_stats["interval_history"])) # always pick same note during frame refresh with seeding
+            picked_name = random.choice(both_note_names)
+            
+            screen.blit(BUTTON_FONT.render(picked_name, True, WHITE), (x-8, y-7))
+
+        else:
+            screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-18, y-7))
     else:
         screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-4, y-7))
-
 
 # Run game
 if __name__ == "__main__":
@@ -338,8 +346,8 @@ if __name__ == "__main__":
                     pygame.draw.circle(screen, note_a.color, note_a_pos, NOTE_RADIUS)
                     pygame.draw.circle(screen, note_b.color, note_b_pos, NOTE_RADIUS)
                     
-                    draw_note_name(note_a)
-                    draw_note_name(note_b)
+                    draw_note_name(note_a, random_sharp_flat=True)
+                    draw_note_name(note_b, random_sharp_flat=True)
 
                     # draw the interval name on the midpoint of the line
                     midp_x, midp_y = (note_a_pos[0] + note_b_pos[0])/2, (note_a_pos[1] + note_b_pos[1])/2

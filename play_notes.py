@@ -200,11 +200,20 @@ if __name__ == "__main__":
     
         
         # draw note names
-        def draw_note_name(note):
+        def draw_note_name(note, random_sharp_flat: bool):
             note_pos = get_note_pos(ALL_NOTES, all_note_pos, note)
             x, y = note_pos
             if "/" in note.name:
-                screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-18, y-7))
+                if random_sharp_flat:
+                    both_note_names = note.name.split("/")
+
+                    random.seed(len(curr_stats["note_history"])) # always pick same note during frame refresh with seeding
+                    picked_name = random.choice(both_note_names)
+                    
+                    screen.blit(BUTTON_FONT.render(picked_name, True, WHITE), (x-8, y-7))
+
+                else:
+                    screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-18, y-7))
             else:
                 screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-4, y-7))
 
@@ -226,7 +235,7 @@ if __name__ == "__main__":
             pygame.draw.circle(screen, last_note.color, last_note_pos, NOTE_RADIUS)
             pygame.draw.circle(screen, (149,165,166), predict_note_pos, NOTE_RADIUS)
 
-            draw_note_name(last_note)
+            draw_note_name(last_note, random_sharp_flat=True)
         
         else:
             # draw highlight around predict_note
@@ -300,7 +309,8 @@ if __name__ == "__main__":
 
                     # reveal predict note true color, colour circle and draw text
                     pygame.draw.circle(screen, predict_note.color, predict_note_pos, NOTE_RADIUS)
-                    draw_note_name(predict_note)
+                    # if note is a sharp/flat, 50% chance to draw either one of the two names 
+                    draw_note_name(predict_note, random_sharp_flat=True)
 
                     # # draw the interval name on the midpoint of the line
                     # if last_note:
