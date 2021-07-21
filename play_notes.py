@@ -1,5 +1,5 @@
 from structs import Guess, Note
-from helpers import calc_prob_dist_guessmaker, get_interval_name, load_data, notes_equal, save_data, simple_linspace, string_idx_to_letter, zero_one_norm, get_note_pos
+from helpers import calc_prob_dist_guessmaker, get_interval_name, hour_now, load_data, notes_equal, save_data, simple_linspace, string_idx_to_letter, zero_one_norm, get_note_pos
 import os
 from constants import *
 
@@ -207,7 +207,7 @@ if __name__ == "__main__":
                 if random_sharp_flat:
                     both_note_names = note.name.split("/")
 
-                    random.seed(len(curr_stats["note_history"])) # always pick same note during frame refresh with seeding
+                    random.seed(len(curr_stats["note_history"]) + hour_now()) # always pick same note during frame refresh with seeding
                     picked_name = random.choice(both_note_names)
                     
                     screen.blit(BUTTON_FONT.render(picked_name, True, WHITE), (x-8, y-7))

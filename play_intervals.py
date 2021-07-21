@@ -1,7 +1,7 @@
 from play_notes import get_interval_name
 import os
 from structs import Guess, Interval, Note
-from helpers import calc_prob_dist_guessmaker, combine_colors, intervals_equal, load_data,get_note_pos, make_pygame_sound_from_freq, notes_equal, play_notes_harmonic, save_data, simple_linspace, string_idx_to_letter, zero_one_norm
+from helpers import calc_prob_dist_guessmaker, combine_colors, hour_now, intervals_equal, load_data,get_note_pos, make_pygame_sound_from_freq, notes_equal, play_notes_harmonic, save_data, simple_linspace, string_idx_to_letter, zero_one_norm
 from constants import *
 
 from numpy.lib.polynomial import _poly_dispatcher
@@ -84,7 +84,7 @@ def draw_note_name(note, random_sharp_flat: bool):
         if random_sharp_flat:
             both_note_names = note.name.split("/")
 
-            random.seed(len(curr_stats["interval_history"])) # always pick same note during frame refresh with seeding
+            random.seed(len(curr_stats["interval_history"]) + hour_now()) # always pick same note during frame refresh with seeding
             picked_name = random.choice(both_note_names)
             
             screen.blit(BUTTON_FONT.render(picked_name, True, WHITE), (x-8, y-7))

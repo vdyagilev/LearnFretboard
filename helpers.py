@@ -2,6 +2,7 @@ import numpy as np
 from constants import *
 import pickle
 import pygame
+import datetime as dt
 
 def load_data(filename: str) -> list:
     """Load data of note accuracies and such from pickled file"""
@@ -126,3 +127,5 @@ def play_notes_harmonic(note_a, note_b, millisecs):
     sound_a.stop()
     sound_b.stop()
 
+def hour_now() -> int:
+    return dt.datetime.today().hour
