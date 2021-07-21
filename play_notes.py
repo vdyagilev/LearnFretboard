@@ -1,5 +1,5 @@
 from structs import Guess, Note
-from helpers import calc_prob_dist_guessmaker, get_interval_name, hour_now, load_data, notes_equal, save_data, simple_linspace, string_idx_to_letter, zero_one_norm, get_note_pos
+from helpers import calc_prob_dist_guessmaker, get_interval_name, hour_now, is_light_color, load_data, notes_equal, save_data, simple_linspace, string_idx_to_letter, zero_one_norm, get_note_pos
 import os
 from constants import *
 
@@ -203,6 +203,13 @@ if __name__ == "__main__":
         def draw_note_name(note, random_sharp_flat: bool):
             note_pos = get_note_pos(ALL_NOTES, all_note_pos, note)
             x, y = note_pos
+
+            # text color white if dark color and dark if light color
+            if is_light_color(note.color):
+                text_color = DARK_GREY
+            else:
+                text_color = WHITE
+
             if "/" in note.name:
                 if random_sharp_flat:
                     both_note_names = note.name.split("/")
@@ -210,12 +217,12 @@ if __name__ == "__main__":
                     random.seed(len(curr_stats["note_history"]) + hour_now()) # always pick same note during frame refresh with seeding
                     picked_name = random.choice(both_note_names)
                     
-                    screen.blit(BUTTON_FONT.render(picked_name, True, WHITE), (x-8, y-7))
+                    screen.blit(BUTTON_FONT.render(picked_name, True, text_color), (x-8, y-7))
 
                 else:
-                    screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-18, y-7))
+                    screen.blit(BUTTON_FONT.render(note.name, True, text_color), (x-18, y-7))
             else:
-                screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-4, y-7))
+                screen.blit(BUTTON_FONT.render(note.name, True, text_color), (x-4, y-7))
 
         if last_note:
             last_note_pos  = get_note_pos(ALL_NOTES, all_note_pos, last_note)
@@ -298,7 +305,7 @@ if __name__ == "__main__":
                     
                     else:
                         error_sound.play()
-                        
+
                         if NO_WRONG:
                             continue
 

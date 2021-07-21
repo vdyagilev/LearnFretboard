@@ -1,7 +1,7 @@
 from play_notes import get_interval_name
 import os
 from structs import Guess, Interval, Note
-from helpers import calc_prob_dist_guessmaker, combine_colors, hour_now, intervals_equal, load_data,get_note_pos, make_pygame_sound_from_freq, notes_equal, play_notes_harmonic, save_data, simple_linspace, string_idx_to_letter, zero_one_norm
+from helpers import calc_prob_dist_guessmaker, combine_colors, hour_now, intervals_equal, is_light_color, load_data,get_note_pos, make_pygame_sound_from_freq, notes_equal, play_notes_harmonic, save_data, simple_linspace, string_idx_to_letter, zero_one_norm
 from constants import *
 
 from numpy.lib.polynomial import _poly_dispatcher
@@ -80,6 +80,13 @@ def choose_interval(curr_stats, saved_data):
 def draw_note_name(note, random_sharp_flat: bool):
     note_pos = get_note_pos(ALL_NOTES, all_note_pos, note)
     x, y = note_pos
+
+    # text color white if dark color and dark if light color
+    if is_light_color(note.color):
+        text_color = DARK_GREY
+    else:
+        text_color = WHITE
+
     if "/" in note.name:
         if random_sharp_flat:
             both_note_names = note.name.split("/")
@@ -87,12 +94,12 @@ def draw_note_name(note, random_sharp_flat: bool):
             random.seed(len(curr_stats["interval_history"]) + hour_now()) # always pick same note during frame refresh with seeding
             picked_name = random.choice(both_note_names)
             
-            screen.blit(BUTTON_FONT.render(picked_name, True, WHITE), (x-8, y-7))
+            screen.blit(BUTTON_FONT.render(picked_name, True, text_color), (x-8, y-7))
 
         else:
-            screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-18, y-7))
+            screen.blit(BUTTON_FONT.render(note.name, True, text_color), (x-18, y-7))
     else:
-        screen.blit(BUTTON_FONT.render(note.name, True, WHITE), (x-4, y-7))
+        screen.blit(BUTTON_FONT.render(note.name, True, text_color), (x-4, y-7))
 
 # Run game
 if __name__ == "__main__":
@@ -320,7 +327,7 @@ if __name__ == "__main__":
                     # record incorrect guess
                     else:
                         error_sound.play()
-                        
+
                         if NO_WRONG:
                             continue
                         

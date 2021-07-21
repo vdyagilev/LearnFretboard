@@ -3,6 +3,7 @@ from constants import *
 import pickle
 import pygame
 import datetime as dt
+import math
 
 def load_data(filename: str) -> list:
     """Load data of note accuracies and such from pickled file"""
@@ -129,3 +130,12 @@ def play_notes_harmonic(note_a, note_b, millisecs):
 
 def hour_now() -> int:
     return dt.datetime.today().hour
+
+def is_light_color(rgb) -> bool:
+    # https://stackoverflow.com/questions/22603510/is-this-possible-to-detect-a-colour-is-a-light-or-dark-colour
+    r, g, b = rgb
+    hsp = math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
+    if (hsp>127.5):
+        return True
+    else:
+        return False
