@@ -166,7 +166,7 @@ if __name__ == "__main__":
             pygame.draw.circle(screen, COLORS[note_name], coord, BUTTON_RADIUS)
 
             if is_light_color(COLORS[note_name]):
-                text_color = DARK_GREY
+                text_color = VERY_DARK_GREY
             else:
                 text_color = WHITE
             
@@ -211,7 +211,7 @@ if __name__ == "__main__":
 
             # text color white if dark color and dark if light color
             if is_light_color(note.color):
-                text_color = DARK_GREY
+                text_color = VERY_DARK_GREY
             else:
                 text_color = WHITE
 

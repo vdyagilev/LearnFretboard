@@ -83,7 +83,7 @@ def draw_note_name(note, random_sharp_flat: bool):
 
     # text color white if dark color and dark if light color
     if is_light_color(note.color):
-        text_color = DARK_GREY
+        text_color = VERY_DARK_GREY
     else:
         text_color = WHITE
 
