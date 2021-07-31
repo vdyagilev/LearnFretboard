@@ -37,6 +37,8 @@ Playing *Learn Intervals*
 python play_intervals.
 ```
 
+## Settings
+
 Changing settings and properties. Colours, timing, etc.
 All variables are found and can be changed in ```constants.py```.
 
