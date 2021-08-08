@@ -89,4 +89,4 @@ HARMONIC_INTERVAL_PROB = 0.5
 ACTIVE_INTERVALS = INTERVAL_NAMES
 
 # If False then will not draw title and score texts
-DRAW_TITLE = True
+DRAW_TITLE = False
