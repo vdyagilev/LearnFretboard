@@ -157,9 +157,10 @@ if __name__ == "__main__":
     # init screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.RESIZABLE)
 
-    # rendering a text written in
-    # this font
-    title = TITLE_FONT.render('Learn Fretboard Intervals', True, (45, 52, 54))
+    if DRAW_TITLE:
+        # rendering a text written in
+        # this font
+        title = TITLE_FONT.render('Learn Fretboard Intervals', True, (45, 52, 54))
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -193,17 +194,20 @@ if __name__ == "__main__":
         screen.blit(fretboard_image, (fretboard_side_padding, fretboard_vert_padding)) 
 
 
-        # draw title
-        # create array of columns (each column is a x  in evenly spaced columns)
-        num_cols = 6
-        horiz_col_locs = [x for x in simple_linspace(side_padding, WINDOW_WIDTH-side_padding, num_cols)]
-        screen.blit(title, (horiz_col_locs[1] - 120, 40)) # draw in center col
+     
 
-        # draw num_correct and num_wrong this round
-        num_correct_title = LABEL_FONT.render(f'Correct: {curr_stats["num_correct"]}', True, DARK_GREY)
-        num_wrong_title = LABEL_FONT.render(f'Wrong: {curr_stats["num_wrong"]}', True, DARK_GREY)
-        screen.blit(num_correct_title, (horiz_col_locs[3], 45))
-        screen.blit(num_wrong_title, (horiz_col_locs[4], 45))
+        if DRAW_TITLE:
+               # draw title
+            # create array of columns (each column is a x  in evenly spaced columns)
+            num_cols = 6
+            horiz_col_locs = [x for x in simple_linspace(side_padding, WINDOW_WIDTH-side_padding, num_cols)]
+            screen.blit(title, (horiz_col_locs[1] - 120, 40)) # draw in center col
+            
+            # draw num_correct and num_wrong this round
+            num_correct_title = LABEL_FONT.render(f'Correct: {curr_stats["num_correct"]}', True, DARK_GREY)
+            num_wrong_title = LABEL_FONT.render(f'Wrong: {curr_stats["num_wrong"]}', True, DARK_GREY)
+            screen.blit(num_correct_title, (horiz_col_locs[3], 45))
+            screen.blit(num_wrong_title, (horiz_col_locs[4], 45))
 
         # draw action buttons
         num_cols = 13

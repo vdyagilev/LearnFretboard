@@ -4,7 +4,7 @@ from helpers import get_interval_name, make_pygame_sound_from_freq, reject_outli
 import pygame
 import numpy
 import numpy as np
-
+import random
 
 # A Guess is something that has a real string value and a users prediction of it, and the time it took.
 class Guess:
@@ -101,13 +101,16 @@ class Note(GuessMaker):
         pygame.time.delay(millisecs)
         sound.stop()
 
-    def play_overtoned_sound(self, millisecs, n=4):
+    def play_overtoned_sound(self, millisecs, n=7):
         # generate first n overtones from fundemental frequency and play them
         freqs = [self.frequency/(i+1) for i in range(n)] 
 
         # set diminishing volume to overtones
-        decr_factor = 1
-        volumes = [1.0/(decr_factor*(i+1)) for i in range(n)]
+        get_randomness = lambda: 100.0 / random.randint(80, 100)
+        loudness_factor = 0.5
+        volumes = [1/(i/loudness_factor)*get_randomness() for i in range(1, n)]
+        # first volume is always 1
+        volumes.insert(0, 1.0)
 
         # create pygame sounds with the volumes
         sounds = [make_pygame_sound_from_freq(freq, volumes[i]) for i, freq in enumerate(freqs)]
