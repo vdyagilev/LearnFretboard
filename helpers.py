@@ -143,7 +143,9 @@ def play_overtoned_note(fundemental_freq, millisecs, n=7):
 
     # set diminishing volume to overtones
     get_randomness = lambda: 100.0 / random.randint(90, 100)
-    volumes = [1/(i*get_randomness()) for i in range(1, n)]
+    decr_factor = 4 # the larger decr_factor is, the quieter next overtones will be
+    volumes = [1/(decr_factor * i * get_randomness()) for i in range(1, n)]
+    
     # first volume is always 1
     volumes.insert(0, 1.0)
 
@@ -165,7 +167,9 @@ def play_notes_harmonic_overtoned(notes_list, millisecs, n=3):
 
         # set diminishing volume to overtones
         get_randomness = lambda: 100.0 / random.randint(90, 100)
-        volumes = [1/(i*get_randomness()) for i in range(1, n)]
+        decr_factor = 4 # the larger decr_factor is, the quieter next overtones will be
+        volumes = [1/(decr_factor * i * get_randomness()) for i in range(1, n)]
+        
         # first volume is always 1
         volumes.insert(0, 1.0)
 
