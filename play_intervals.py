@@ -1,7 +1,7 @@
 from play_notes import get_interval_name
 import os
 from structs import Guess, Interval, Note
-from helpers import calc_prob_dist_guessmaker, combine_colors, hour_now, intervals_equal, is_light_color, load_data,get_note_pos, make_pygame_sound_from_freq, notes_equal, play_notes_harmonic, save_data, simple_linspace, string_idx_to_letter, zero_one_norm
+from helpers import calc_prob_dist_guessmaker, combine_colors, hour_now, intervals_equal, is_light_color, load_data,get_note_pos, make_pygame_sound_from_freq, notes_equal, play_notes_harmonic, play_notes_harmonic_overtoned, save_data, simple_linspace, string_idx_to_letter, zero_one_norm
 from constants import *
 
 from numpy.lib.polynomial import _poly_dispatcher
@@ -388,7 +388,7 @@ if __name__ == "__main__":
                         note_a.play_overtoned_sound(rand_lens[2])
 
                     else:
-                        play_notes_harmonic([note_a, note_b], sum(rand_lens))
+                        play_notes_harmonic_overtoned([note_a, note_b], sum(rand_lens))
 
                     # # draw success or wrong text
                     # screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))

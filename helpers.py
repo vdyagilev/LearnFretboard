@@ -1,9 +1,11 @@
+import random
 import numpy as np
 from constants import *
 import pickle
 import pygame
 import datetime as dt
 import math
+
 
 def load_data(filename: str) -> list:
     """Load data of note accuracies and such from pickled file"""
@@ -135,9 +137,48 @@ def play_sounds_together(sounds, millisecs):
     for sound in sounds:
         sound.stop()
 
+def play_overtoned_note(fundemental_freq, millisecs, n=7):
+    # generate first n overtones from fundemental frequency and play them
+    freqs = [fundemental_freq/(i+1) for i in range(n)] 
+
+    # set diminishing volume to overtones
+    get_randomness = lambda: 100.0 / random.randint(80, 100)
+    loudness_factor = 2.7
+    volumes = [1/(i/loudness_factor)*get_randomness() for i in range(1, n)]
+    # first volume is always 1
+    volumes.insert(0, 1.0)
+
+    # create pygame sounds with the volumes
+    sounds = [make_pygame_sound_from_freq(freq, volumes[i]) for i, freq in enumerate(freqs)]
+    
+    # play all sounds at once
+    play_sounds_together(sounds, millisecs)
+
 def play_notes_harmonic(notes_list, millisecs):
     sounds = [make_pygame_sound_from_freq(note.frequency) for note in notes_list]
     play_sounds_together(sounds, millisecs)
+
+def play_notes_harmonic_overtoned(notes_list, millisecs, n=3):
+    all_sounds = []
+    for note in notes_list:
+        # generate first n overtones from fundemental frequency and play them
+        freqs = [note.frequency/(i+1) for i in range(n)] 
+
+        # set diminishing volume to overtones
+        get_randomness = lambda: 100.0 / random.randint(80, 100)
+        loudness_factor = 2.7
+        volumes = [1/(i/loudness_factor)*get_randomness() for i in range(1, n)]
+        # first volume is always 1
+        volumes.insert(0, 1.0)
+
+        # create pygame sounds with the volumes
+        sounds = [make_pygame_sound_from_freq(freq, volumes[i]) for i, freq in enumerate(freqs)]
+        
+        # append all items list with all other notes sounds
+        all_sounds += sounds
+
+    # play all sounds at once
+    play_sounds_together(all_sounds, millisecs)
 
 def hour_now() -> int:
     return dt.datetime.today().hour
