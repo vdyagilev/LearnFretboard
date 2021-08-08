@@ -340,7 +340,7 @@ if __name__ == "__main__":
                     min_play, max_play = 700, 2500
                     random_play_len = lambda : random.randint(min_play, max_play)
                     play_len = random_play_len()
-                    predict_note.play_sound(play_len)
+                    predict_note.play_overtoned_sound(play_len)
 
                     # # draw success or wrong text
                     # screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))

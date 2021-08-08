@@ -1,5 +1,5 @@
 from constants import *
-from helpers import get_interval_name, make_pygame_sound_from_freq, reject_outliers, notes_equal
+from helpers import get_interval_name, make_pygame_sound_from_freq, reject_outliers, notes_equal, play_sounds_together
 
 import pygame
 import numpy
@@ -92,11 +92,28 @@ class Note(GuessMaker):
         self.frequency = NOTE_FREQ[string_idx][fret_idx]
 
 
-    def play_sound(self, millisecs):
-        sound = make_pygame_sound_from_freq(self.frequency)
+    def play_sound(self, millisecs, volume=1.0):
+        # create pygame sound from frequency
+        sound = make_pygame_sound_from_freq(self.frequency, volume)
+
+        # play for millisecs
         sound.play(-1)
         pygame.time.delay(millisecs)
         sound.stop()
+
+    def play_overtoned_sound(self, millisecs, n=4):
+        # generate first n overtones from fundemental frequency and play them
+        freqs = [self.frequency/(i+1) for i in range(n)] 
+
+        # set diminishing volume to overtones
+        decr_factor = 1
+        volumes = [1.0/(decr_factor*(i+1)) for i in range(n)]
+
+        # create pygame sounds with the volumes
+        sounds = [make_pygame_sound_from_freq(freq, volumes[i]) for i, freq in enumerate(freqs)]
+        
+        # play all sounds at once
+        play_sounds_together(sounds, millisecs)
 
     def __str__(self):
         return f'({self.name}) string: {self.string_idx} fret: {self.fret_idx}'

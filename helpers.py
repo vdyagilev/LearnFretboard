@@ -110,23 +110,34 @@ def get_note_pos(notes_list, pos_list, note):
 
 
 
-def make_pygame_sound_from_freq(freq):
+def make_pygame_sound_from_freq(freq, volume=1.0):
+    # create sound from frequency
     arr = np.array([4096 * np.sin(2.0 * np.pi * freq * x / SAMPLE_RATE) for x in range(0, SAMPLE_RATE)]).astype(np.int16)
     arr2 = np.c_[arr,arr]
     sound = pygame.sndarray.make_sound(arr2)
+
+
+    # set volume
+    sound.set_volume(volume)
     return sound
 
-def play_notes_harmonic(note_a, note_b, millisecs):
-    sound_a = make_pygame_sound_from_freq(note_a.frequency)
-    sound_b = make_pygame_sound_from_freq(note_b.frequency)
+def play_sounds_together(sounds, millisecs):
+    # plays pygame sounds for millisecs duration
 
-    sound_a.play(-1)
-    sound_b.play(-1)
-
+    # start playing 
+    for sound in sounds:
+        sound.play(-1)
+    
+    # delay
     pygame.time.delay(millisecs)
 
-    sound_a.stop()
-    sound_b.stop()
+    # stop sounds
+    for sound in sounds:
+        sound.stop()
+
+def play_notes_harmonic(notes_list, millisecs):
+    sounds = [make_pygame_sound_from_freq(note.frequency) for note in notes_list]
+    play_sounds_together(sounds, millisecs)
 
 def hour_now() -> int:
     return dt.datetime.today().hour
