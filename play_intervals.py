@@ -383,12 +383,12 @@ if __name__ == "__main__":
                     rand_lens = [random_play_len() for _ in range(3)]
                     if random.random() > HARMONIC_INTERVAL_PROB:
                         # play melodic
-                        note_a.play_overtoned_sound(rand_lens[0])
-                        note_b.play_overtoned_sound(rand_lens[1])
-                        note_a.play_overtoned_sound(rand_lens[2])
+                        note_a.play_overtoned_sound(rand_lens[0], n=5)
+                        note_b.play_overtoned_sound(rand_lens[1], n=5)
+                        note_a.play_overtoned_sound(rand_lens[2], n=5)
 
                     else:
-                        play_notes_harmonic_overtoned([note_a, note_b], sum(rand_lens))
+                        play_notes_harmonic_overtoned([note_a, note_b], sum(rand_lens), n=6)
 
                     # # draw success or wrong text
                     # screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))
