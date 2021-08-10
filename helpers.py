@@ -5,6 +5,8 @@ import pickle
 import pygame
 import datetime as dt
 import math
+import os
+from time import sleep
 
 
 def load_data(filename: str) -> list:
@@ -140,6 +142,8 @@ def make_overtoned_sounds_from_freq(fun_freq, n=7) -> list:
     
     return sounds
 
+
+
 def play_sounds_together(sounds, millisecs):
     # plays pygame sounds for millisecs duration
 
@@ -198,3 +202,46 @@ def is_light_color(rgb) -> bool:
         return True
     else:
         return False
+
+# The screen clear function
+def screen_clear():
+    # for mac and linux(here, os.name is 'posix')
+    if os.name == 'posix':
+        _ = os.system('clear')
+    else:
+        # for windows platfrom
+        _ = os.system('cls')
+
+
+def next_note(from_note, semitones):
+    count = 0
+    from_note_idx = NOTE_NAMES.index(from_note)
+    note_num = from_note_idx
+
+    while True:
+        next_note = NOTE_NAMES[note_num]
+        
+        if count == semitones:
+            print(f'from_note {from_note} up {semitones} semitones is {next_note}')
+            return next_note
+
+        count += 1
+        note_num += 1
+        if note_num >= len(NOTE_NAMES):
+            note_num = 0
+
+    
+
+def get_all_freqs(note_name):
+    freqs = []
+    strings = [0, 1, 2, 3, 4, 5]
+    for string_idx in strings:
+        for i, note in enumerate(NOTE_POS[string_idx]):
+            if note == note_name: 
+                # get freq from same pos in freq data struct
+                freq = NOTE_FREQ[string_idx][i]
+                
+                if freq not in freqs:
+                    freqs.append(freq)
+    
+    return freqs
