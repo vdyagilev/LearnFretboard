@@ -222,7 +222,6 @@ def next_note(from_note, semitones):
         next_note = NOTE_NAMES[note_num]
         
         if count == semitones:
-            print(f'from_note {from_note} up {semitones} semitones is {next_note}')
             return next_note
 
         count += 1
@@ -232,9 +231,8 @@ def next_note(from_note, semitones):
 
     
 
-def get_all_freqs(note_name):
+def get_freqs(note_name, strings=[0, 1, 2, 3, 4, 5]):
     freqs = []
-    strings = [0, 1, 2, 3, 4, 5]
     for string_idx in strings:
         for i, note in enumerate(NOTE_POS[string_idx]):
             if note == note_name: 

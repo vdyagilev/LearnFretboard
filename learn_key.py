@@ -1,6 +1,6 @@
 # generate random chord progression in a random key, then quiz user it
 from os import closerange
-from helpers import get_all_freqs, make_overtoned_sounds_from_freq, next_note, play_sounds_together, screen_clear
+from helpers import get_freqs, make_overtoned_sounds_from_freq, next_note, play_sounds_together, screen_clear
 from constants import DORIAN_CHORDS, DORIAN_SCALE, LOCRIAN_CHORDS, LOCRIAN_SCALE, LYDIAN_CHORDS, LYDIAN_SCALE, MAJOR_CHORDS, MAJOR_SCALE, MINOR_CHORDS, MINOR_SCALE, MIXOLYDIAN_CHORDS, MIXOLYDIAN_SCALE, NOTE_FREQ, NOTE_NAMES, NOTE_POS, PHRYGIAN_CHORDS, PHRYGIAN_SCALE, SAMPLE_RATE
 from constants import _MAJ, _MIN, _DIM 
 import random
@@ -40,19 +40,19 @@ def play_chord(fun_freq, chord_version, millisecs, seed=None, n_overtone=4):
 
     tones = [un, deux, trois]
 
-    # # add octaves randomly
-    # random.seed(a=seed)
-    # for i, tone in enumerate(tones):
-    #     rand = random.randint(0, 100)
-    #     if rand < 20:
-    #         tones[i] = tone * (2/1) # up an octave
-    #     elif rand < 40:
-    #         tones[i] = tone * (0.5/1) # down one octave
+    # add octaves randomly
+    random.seed(a=seed)
+    for i, tone in enumerate(tones):
+        rand = random.randint(0, 100)
+        if rand < 20:
+            tones[i] = tone * (2/1) # up an octave
+        elif rand < 40:
+            tones[i] = tone * (0.5/1) # down one octave
 
-    #     elif rand < 60:
-    #         tones[i] = tone * (4/1) # up two octave
-    #     elif rand < 80:
-    #         tones[i] = tone * (0.25/1) # down two octave
+        elif rand < 60:
+            tones[i] = tone * (4/1) # up two octave
+        elif rand < 80:
+            tones[i] = tone * (0.25/1) # down two octave
 
     sounds = [ make_overtoned_sounds_from_freq(f, n=n_overtone) for f in tones ]
     sounds = sum(sounds, []) # collapse nested lists
@@ -66,10 +66,10 @@ if __name__ == '__main__':
     pygame.mixer.init(SAMPLE_RATE,-16,2,512)
 
     while True:
-        chosen_key = "C"#random.choice(NOTE_NAMES)
-        chosen_mode = 0#random.randint(0, 6)
+        chosen_key = random.choice(NOTE_NAMES)
+        chosen_mode = random.randint(0, 6)
 
-        num_chords = 10
+        # num_random_chords = 10
 
         mode_mapping = [MAJOR_CHORDS, DORIAN_CHORDS, PHRYGIAN_CHORDS, LYDIAN_CHORDS, MIXOLYDIAN_CHORDS, MINOR_CHORDS,LOCRIAN_CHORDS]
 
@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
         # # draw # num_chords randomly-samples from chosen_chords and replace them
         # _weights = [0.5, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1] # weight root key most
-        # _chords = random.choices(chosen_chords, weights= _weights, k=num_chords)
+        # _chords = random.choices(chosen_chords, weights= _weights, k=num_random_chords)
         # # play the mode first, then randomly picked chords
         # chosen_chords = chosen_chords + _chords
 
@@ -121,7 +121,7 @@ if __name__ == '__main__':
         for chord_idx, chord_vers in chosen_chords:
             # get fundemental frequency of chosen key note
             num_semitones = calc_num_semitones(chord_idx, chosen_mode) # num semitones from root to chord_idx location on fretboard
-            fun_freq = get_all_freqs( next_note(chosen_key, num_semitones) )[2]
+            fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[2, 3,] ) )
 
             # determine version of chord from mode
             play_len, play_times = random.choice([(600, 1)])
