@@ -10,7 +10,7 @@ import time
 MODE_NAMES = ['major', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'minor', 'locrian']
 
 
-def play_chord(fun_freq, chord_version, millisecs, seed=None, n_overtone=3):
+def play_chord(fun_freq, chord_version, millisecs, seed=None, n_overtone=1, randomize=True):
     # chord based on just intonation
     min_second = fun_freq*(16/15)
     maj_second = fun_freq*(9/8)
@@ -38,21 +38,23 @@ def play_chord(fun_freq, chord_version, millisecs, seed=None, n_overtone=3):
         print("UNACCEPTED MODE: ", chord_version)
         exit(1)
 
-    tones = [un, deux, trois]
+    tones = [un, deux, trois, octave,]
 
-    # add octaves randomly
-    random.seed(a=seed)
-    for i, tone in enumerate(tones):
-        rand = random.randint(0, 100)
-        if rand < 15:
-            tones[i] = tone * (2/1) # up an octave
-        elif rand < 30:
-            tones[i] = tone * (0.5/1) # down one octave
 
-        elif rand < 40:
-            tones[i] = tone * (4/1) # up two octave
-        elif rand < 50:
-            tones[i] = tone * (0.25/1) # down two octave
+    if randomize:
+        # add octaves randomly
+        random.seed(a=seed)
+        for i, tone in enumerate(tones):
+            rand = random.randint(0, 100)
+            if rand < 15:
+                tones[i] = tone * (2/1) # up an octave
+            elif rand < 30:
+                tones[i] = tone * (0.5/1) # down one octave
+
+            elif rand < 40:
+                tones[i] = tone * (4/1) # up two octave
+            elif rand < 50:
+                tones[i] = tone * (0.25/1) # down two octave
 
     # remove too-high frequencies
     for i, tone in enumerate(tones):
@@ -80,7 +82,7 @@ if __name__ == '__main__':
         chosen_key = random.choice(NOTE_NAMES)
         chosen_mode = random.randint(0, 6)
 
-        num_random_chords = 24
+        num_random_chords = 15
 
         mode_mapping = [MAJOR_CHORDS, DORIAN_CHORDS, PHRYGIAN_CHORDS, LYDIAN_CHORDS, MIXOLYDIAN_CHORDS, MINOR_CHORDS,LOCRIAN_CHORDS]
 
@@ -129,7 +131,7 @@ if __name__ == '__main__':
         for chord_idx, chord_vers in chosen_chords:
             # get fundemental frequency of chosen key note
             num_semitones = calc_num_semitones(chord_idx, chosen_mode) # num semitones from root to chord_idx location on fretboard
-            fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[2, 3, 4,] ) )
+            fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[3, 4] ) )
 
             # determine version of chord from mode
             play_len = random.randint(400, 600)
@@ -142,13 +144,13 @@ if __name__ == '__main__':
         for chord_idx, chord_vers in _random_chords:
             # get fundemental frequency of chosen key note
             num_semitones = calc_num_semitones(chord_idx, chosen_mode) # num semitones from root to chord_idx location on fretboard
-            fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[2, 3, 4,] ) )
+            fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[0, 1, 2, 3, 4, 5] ) )
 
             # determine version of chord from mode
             play_len = random.randint(200, 400)
 
             seed = random.randint(0, 10000)
-            play_chord(fun_freq, chord_vers, play_len, seed=seed)
+            play_chord(fun_freq, chord_vers, play_len, seed=seed, randomize=True)
 
         time.sleep(2)
         chosen_chords.reverse()
@@ -156,7 +158,7 @@ if __name__ == '__main__':
         for chord_idx, chord_vers in chosen_chords:
             # get fundemental frequency of chosen key note
             num_semitones = calc_num_semitones(chord_idx, chosen_mode) # num semitones from root to chord_idx location on fretboard
-            fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[2, 3, 4,] ) )
+            fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[3, 4] ) )
 
             # determine version of chord from mode
             play_len = random.randint(400, 600)
