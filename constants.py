@@ -45,6 +45,20 @@ INTERVAL_NAMES = ["Unison", "Minor 2nd", "Major 2nd", "Minor 3rd", "Major 3rd", 
 SHORT_INTERVAL_NAMES = ["U", "m2", "M2", 'm3', 'M3', 'P4', 'T', 'P5', 'm6', 'M6', 'm7', 'M7', 'O']
 
 
+# chord progressions
+_MAJ = "major"
+_MIN = "minor"
+_DIM = "dim"
+
+MAJOR_CHORDS = [_MAJ, _MIN, _MIN, _MAJ, _MAJ, _MIN, _DIM]
+# sequence dorian -> locrian mode chords by shifting major chords by one each time
+DORIAN_CHORDS = MAJOR_CHORDS[1:] + MAJOR_CHORDS[:1]
+PHRYGIAN_CHORDS = MAJOR_CHORDS[2:] + MAJOR_CHORDS[:2]
+LYDIAN_CHORDS = MAJOR_CHORDS[3:] + MAJOR_CHORDS[:3]
+MIXOLYDIAN_CHORDS = MAJOR_CHORDS[4:] + MAJOR_CHORDS[:4]
+MINOR_CHORDS = MAJOR_CHORDS[5:] + MAJOR_CHORDS[:5]
+LOCRIAN_CHORDS = MAJOR_CHORDS[6:] + MAJOR_CHORDS[:6]
+
 # playing tone
 NOTE_FREQ = {
     0: [82.41, 87.31, 92.50, 98.00, 103.83, 110.00, 116.54, 123.47, 130.81, 138.59, 146.83, 155.56, 164.81],
@@ -89,4 +103,4 @@ HARMONIC_INTERVAL_PROB = 0.5
 ACTIVE_INTERVALS = INTERVAL_NAMES
 
 # If False then will not draw title and score texts
-DRAW_TITLE = True
+DRAW_TITLE = False

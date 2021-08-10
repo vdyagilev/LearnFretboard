@@ -123,6 +123,23 @@ def make_pygame_sound_from_freq(freq, volume=1.0):
     sound.set_volume(volume)
     return sound
 
+def make_overtoned_sounds_from_freq(fun_freq, n=7) -> list:
+    # generate first n overtones from fundemental frequency and play them
+    freqs = [fun_freq/(i+1) for i in range(n)] 
+
+    # set diminishing volume to overtones
+    get_randomness = lambda: 100.0 / random.randint(90, 100)
+    decr_factor = 4 # the larger decr_factor is, the quieter next overtones will be
+    volumes = [1/(decr_factor * i * get_randomness()) for i in range(1, n)]
+    
+    # first volume is always 1
+    volumes.insert(0, 1.0)
+
+    # create pygame sounds with the volumes
+    sounds = [make_pygame_sound_from_freq(freq, volumes[i]) for i, freq in enumerate(freqs)]
+    
+    return sounds
+
 def play_sounds_together(sounds, millisecs):
     # plays pygame sounds for millisecs duration
 
@@ -138,20 +155,8 @@ def play_sounds_together(sounds, millisecs):
         sound.stop()
 
 def play_overtoned_note(fundemental_freq, millisecs, n=7):
-    # generate first n overtones from fundemental frequency and play them
-    freqs = [fundemental_freq/(i+1) for i in range(n)] 
+    sounds = make_overtoned_sound_from_freq(fundemental_freq, n)
 
-    # set diminishing volume to overtones
-    get_randomness = lambda: 100.0 / random.randint(90, 100)
-    decr_factor = 4 # the larger decr_factor is, the quieter next overtones will be
-    volumes = [1/(decr_factor * i * get_randomness()) for i in range(1, n)]
-    
-    # first volume is always 1
-    volumes.insert(0, 1.0)
-
-    # create pygame sounds with the volumes
-    sounds = [make_pygame_sound_from_freq(freq, volumes[i]) for i, freq in enumerate(freqs)]
-    
     # play all sounds at once
     play_sounds_together(sounds, millisecs)
 
