@@ -159,7 +159,7 @@ def play_sounds_together(sounds, millisecs):
         sound.stop()
 
 def play_overtoned_note(fundemental_freq, millisecs, n=7):
-    sounds = make_overtoned_sound_from_freq(fundemental_freq, n)
+    sounds = make_overtoned_sounds_from_freq(fundemental_freq, n)
 
     # play all sounds at once
     play_sounds_together(sounds, millisecs)

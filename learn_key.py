@@ -38,7 +38,7 @@ def play_chord(fun_freq, chord_version, millisecs, seed=None, n_overtone=1, rand
         print("UNACCEPTED MODE: ", chord_version)
         exit(1)
 
-    tones = [un, deux, trois, octave,]
+    tones = [un, deux, trois, octave,] 
 
 
     if randomize:
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         chosen_key = random.choice(NOTE_NAMES)
         chosen_mode = random.randint(0, 6)
 
-        num_random_chords = 15
+        num_random_chords = 8
 
         mode_mapping = [MAJOR_CHORDS, DORIAN_CHORDS, PHRYGIAN_CHORDS, LYDIAN_CHORDS, MIXOLYDIAN_CHORDS, MINOR_CHORDS,LOCRIAN_CHORDS]
 
@@ -134,7 +134,7 @@ if __name__ == '__main__':
             fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[3, 4] ) )
 
             # determine version of chord from mode
-            play_len = random.randint(400, 600)
+            play_len = random.randint(600, 800)
 
             seed = random.randint(0, 10000)
             play_chord(fun_freq, chord_vers, play_len, seed=seed)
@@ -147,7 +147,7 @@ if __name__ == '__main__':
             fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[0, 1, 2, 3, 4, 5] ) )
 
             # determine version of chord from mode
-            play_len = random.randint(200, 400)
+            play_len = random.randint(500, 600)
 
             seed = random.randint(0, 10000)
             play_chord(fun_freq, chord_vers, play_len, seed=seed, randomize=True)
@@ -161,7 +161,7 @@ if __name__ == '__main__':
             fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[3, 4] ) )
 
             # determine version of chord from mode
-            play_len = random.randint(400, 600)
+            play_len = random.randint(600, 800)
 
             seed = random.randint(0, 10000)
             play_chord(fun_freq, chord_vers, play_len, seed=seed)
@@ -174,7 +174,7 @@ if __name__ == '__main__':
         key_inputted = input("key: ")
 
         # respond 
-        if mode_inputted == chosen_mode or mode_inputted == MODE_NAMES[chosen_mode]:
+        if mode_inputted == str(chosen_mode) or mode_inputted == MODE_NAMES[chosen_mode]:
             print("CORRECT MODE!")
         else:
             print("INCORRECT MODE!")
