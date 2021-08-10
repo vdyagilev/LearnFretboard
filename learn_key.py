@@ -8,7 +8,7 @@ import time
 
 MODE_NAMES = ['major', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'minor', 'locrian']
 
-def play_chord(fun_freq, chord_version, millisecs, seed=None, n_overtone=3):
+def play_chord(fun_freq, chord_version, millisecs, seed=None, n_overtone=4):
     # chord based on just intonation
     min_second = fun_freq*(16/15)
     maj_second = fun_freq*(9/8)
@@ -30,7 +30,7 @@ def play_chord(fun_freq, chord_version, millisecs, seed=None, n_overtone=3):
         un, deux, trois = fun_freq, min_third, perf_fifth 
 
     elif chord_version == _DIM:
-        un, deux, trois = fun_freq, maj_third, tritone
+        un, deux, trois = fun_freq, min_third, tritone
     
     else:
         print("UNACCEPTED MODE: ", chord_version)
@@ -65,14 +65,14 @@ if __name__ == '__main__':
         chosen_key = random.choice(NOTE_NAMES)
         chosen_mode = random.randint(0, 6)
 
-        num_chords = random.randint(10, 14)
+        num_chords = random.randint(18, 26)
 
         mode_mapping = [MAJOR_CHORDS, DORIAN_CHORDS, PHRYGIAN_CHORDS, LYDIAN_CHORDS, MIXOLYDIAN_CHORDS, MINOR_CHORDS,LOCRIAN_CHORDS]
 
         # map each chord version from the mode to its index in a typle (index, chord_vers)
         chosen_chords = [ (i, vers) for i, vers in enumerate(mode_mapping[chosen_mode]) ]
 
-        # add in octave
+        # add in root at end
         chosen_chords.append(chosen_chords[0])
 
         # # draw # num_chords randomly-samples from chosen_chords and replace them
@@ -85,18 +85,18 @@ if __name__ == '__main__':
 
         for chord_idx, chord_vers in chosen_chords:
             # get fundemental frequency of chosen key note
-            root_string = random.choice([0, 1, 2])
+            root_string = random.choice([0, 1, 2, 3, 4, 5])
             fret_idx = (NOTE_POS[root_string].index(chosen_key) + chord_idx) % 13
 
             fun_freq = NOTE_FREQ[root_string][fret_idx]
 
             # determine version of chord from mode
-            play_len, play_times = random.choice([(500, 1)])
+            play_len, play_times = random.choice([(250, 1)])
 
             seed = random.randint(0, 10000)
             for _ in range(play_times):
                 play_chord(fun_freq, chord_vers, play_len, seed=seed)
-                time.sleep(random.randint(100, 250)/1000)
+                # time.sleep(random.randint(50, 100)/1000)
 
         # quiz user
         print("(Enter mode from ['major', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'minor', 'locrian'])")
