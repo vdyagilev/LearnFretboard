@@ -10,7 +10,7 @@ import time
 MODE_NAMES = ['major', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'minor', 'locrian']
 
 
-def play_chord(fun_freq, chord_version, millisecs, seed=None, n_overtone=1, randomize=True):
+def play_chord(fun_freq, chord_version, millisecs, seed=None, n_overtone=3, randomize=True):
     # chord based on just intonation
     min_second = fun_freq*(16/15)
     maj_second = fun_freq*(9/8)
@@ -28,17 +28,38 @@ def play_chord(fun_freq, chord_version, millisecs, seed=None, n_overtone=1, rand
     if chord_version == _MAJ:
         un, deux, trois = fun_freq, maj_third, perf_fifth 
 
+        extras = []
+        r = random.randint(0, 100)
+        if r < 25:
+            extras.append(minor_seventh)
+        elif r < 50:
+            extras.append(major_seventh)
+
     elif chord_version == _MIN:
         un, deux, trois = fun_freq, min_third, perf_fifth 
 
+        extras = []
+        r = random.randint(0, 100)
+        if r < 25:
+            extras.append(minor_seventh)
+        elif r < 50:
+            extras.append(major_sixth)
+
     elif chord_version == _DIM:
         un, deux, trois = fun_freq, min_third, tritone
+
+        extras = []
+        r = random.randint(0, 100)
+        if r < 25:
+            extras.append(minor_seventh)
+        elif r < 50:
+            extras.append(major_sixth)
     
     else:
         print("UNACCEPTED MODE: ", chord_version)
         exit(1)
 
-    tones = [un, deux, trois, octave,] 
+    tones = [un, deux, trois, octave,] + extras
 
 
     if randomize:
