@@ -103,6 +103,11 @@ if __name__ == '__main__':
         chosen_key = random.choice(NOTE_NAMES)
         chosen_mode = random.randint(0, 6)
 
+         # NO LOCRIAN
+        while chosen_mode == 6:
+            chosen_mode = random.randint(0, 6)
+            
+
         num_random_chords = 14
 
         mode_mapping = [MAJOR_CHORDS, DORIAN_CHORDS, PHRYGIAN_CHORDS, LYDIAN_CHORDS, MIXOLYDIAN_CHORDS, MINOR_CHORDS,LOCRIAN_CHORDS]
@@ -168,7 +173,7 @@ if __name__ == '__main__':
             fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[0, 1, 2, 3, 4, 5] ) )
 
             # determine version of chord from mode
-            play_len = random.randint(250, 450)
+            play_len = random.randint(450, 850)
 
             seed = random.randint(0, 10000)
             play_chord(fun_freq, chord_vers, play_len, seed=seed, randomize=True)

@@ -104,16 +104,16 @@ RANDOM_NOT_DYNAMIC_PICKING = False
 
 # Only show Intervals with half-step distance less than 
 MAX_INTERVAL_DISTANCE = 100
-MAX_FRET_WIDTH = 5
+MAX_FRET_WIDTH = 13
 
 # If NO_WRONG = True then your mistakes won't be registerd
 NO_WRONG = True
 
 # Plays harmonic intervals over melodic intervals probability
-HARMONIC_INTERVAL_PROB = 0.5
+HARMONIC_INTERVAL_PROB = 0.75
 
 # Shows only intervals listed here
 ACTIVE_INTERVALS = INTERVAL_NAMES
 
 # If False then will not draw title and score texts
-DRAW_TITLE = False
+DRAW_TITLE = True

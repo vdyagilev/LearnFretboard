@@ -377,7 +377,7 @@ if __name__ == "__main__":
                     pygame.display.update()
 
                     # play interval from a to b, then back from b to a
-                    min_len, max_len = 600, 800
+                    min_len, max_len = 400, 560
                     random_play_len = lambda : random.randint(min_len, max_len)
                     # 50% to play melodic interval, 50% harmonic
                     rand_lens = [random_play_len() for _ in range(3)]
@@ -388,7 +388,7 @@ if __name__ == "__main__":
                         note_a.play_overtoned_sound(rand_lens[2], n=5)
 
                     else:
-                        play_notes_harmonic_overtoned([note_a, note_b], sum(rand_lens), n=6)
+                        play_notes_harmonic_overtoned([note_a, note_b], sum(rand_lens), n=4)
 
                     # # draw success or wrong text
                     # screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))
