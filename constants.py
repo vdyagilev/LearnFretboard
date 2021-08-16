@@ -44,6 +44,12 @@ NOTE_POS = {
 INTERVAL_NAMES = ["Unison", "Minor 2nd", "Major 2nd", "Minor 3rd", "Major 3rd", "Perfect 4th", "Tritone", "Perfect 5th", "Minor 6th", "Major 6th", "Minor 7th", "Major 7th", "Octave"]
 SHORT_INTERVAL_NAMES = ["U", "m2", "M2", 'm3', 'M3', 'P4', 'T', 'P5', 'm6', 'M6', 'm7', 'M7', 'O']
 
+def get_note_color(name):
+    # find the color with the / in the dict
+    for key in COLORS.keys():
+        if name in key:
+            return COLORS[key]
+
 
 # chord progressions
 _MAJ = "major"
@@ -104,13 +110,13 @@ RANDOM_NOT_DYNAMIC_PICKING = False
 
 # Only show Intervals with half-step distance less than 
 MAX_INTERVAL_DISTANCE = 100
-MAX_FRET_WIDTH = 13
+MAX_FRET_WIDTH = 4
 
 # If NO_WRONG = True then your mistakes won't be registerd
 NO_WRONG = True
 
 # Plays harmonic intervals over melodic intervals probability
-HARMONIC_INTERVAL_PROB = 0.75
+HARMONIC_INTERVAL_PROB = 0.5
 
 # Shows only intervals listed here
 ACTIVE_INTERVALS = INTERVAL_NAMES

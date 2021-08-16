@@ -341,7 +341,7 @@ if __name__ == "__main__":
                     pygame.display.update()
                 
                     # play tone
-                    min_play, max_play = 700, 2500
+                    min_play, max_play = 400, 900
                     random_play_len = lambda : random.randint(min_play, max_play)
                     play_len = random_play_len()
                     predict_note.play_overtoned_sound(play_len)
