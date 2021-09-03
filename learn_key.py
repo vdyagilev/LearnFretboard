@@ -8,7 +8,7 @@ import pygame
 import time
 
 MODE_NAMES = ['major', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'minor', 'locrian']
-
+ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII"]
 
 def play_chord(fun_freq, chord_version, millisecs, seed=None, n_overtone=1, randomize=True, extend=False):
     # chord based on just intonation
@@ -108,12 +108,12 @@ if __name__ == '__main__':
         chosen_key = random.choice(NOTE_NAMES)
         chosen_mode = random.randint(0, 6)
 
-        #  # NO LOCRIAN
-        # while chosen_mode == 6:
-        #     chosen_mode = random.randint(0, 6)
+        # NO LOCRIAN
+        while chosen_mode == 6:
+           chosen_mode = random.randint(0, 6)
             
 
-        num_random_chords = 16
+        num_random_chords = 14
 
         mode_mapping = [MAJOR_CHORDS, DORIAN_CHORDS, PHRYGIAN_CHORDS, LYDIAN_CHORDS, MIXOLYDIAN_CHORDS, MINOR_CHORDS,LOCRIAN_CHORDS]
         scale_mapping = [MAJOR_SCALE, DORIAN_SCALE, PHRYGIAN_SCALE, LYDIAN_SCALE, MIXOLYDIAN_SCALE, 
@@ -124,7 +124,7 @@ if __name__ == '__main__':
         chosen_chords = [ (i, vers) for i, vers in enumerate(mode_mapping[chosen_mode]) ]
 
         # draw # num_chords randomly-samples from chosen_chords and replace them
-        _weights = [0.5, 0.1, 0.1, 0.2, 0.3, 0.1, 0.1] # weight root key most
+        _weights = [0.3, 0.1, 0.1, 0.15, 0.2, 0.1, 0.1] # weight root key most
         _random_chords = random.choices(chosen_chords, weights= _weights, k=num_random_chords)
 
         # add in root at end
@@ -167,19 +167,20 @@ if __name__ == '__main__':
 
        
 
-        for chord_idx, chord_vers in chosen_chords:
-            # get fundemental frequency of chosen key note
-            num_semitones = calc_num_semitones(chord_idx, chosen_mode) # num semitones from root to chord_idx location on fretboard
-            fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[3, 4] ) )
+        # for chord_idx, chord_vers in chosen_chords:
+        #     # get fundemental frequency of chosen key note
+        #     num_semitones = calc_num_semitones(chord_idx, chosen_mode) # num semitones from root to chord_idx location on fretboard
+        #     fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[3, 4] ) )
 
-            # determine version of chord from mode
-            play_len = random.randint(600, 800)
+        #     # determine version of chord from mode
+        #     play_len = random.randint(600, 800)
 
-            seed = random.randint(0, 10000)
-            play_chord(fun_freq, chord_vers, play_len, seed=seed)
+        #     seed = random.randint(0, 10000)
+        #     play_chord(fun_freq, chord_vers, play_len, seed=seed)
 
-        time.sleep(2)
+        # time.sleep(2)
 
+        seed = random.randint(0, 10000)
 
         # play random set
         for chord_idx, chord_vers in _random_chords:
@@ -188,26 +189,26 @@ if __name__ == '__main__':
             fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[0, 1, 2, 3, 4, 5] ) )
 
             # determine version of chord from mode
-            play_len = random.randint(250, 650)
+            play_len = random.randint(350, 850)
 
-            seed = random.randint(0, 10000)
+            
             play_chord(fun_freq, chord_vers, play_len, seed=seed, randomize=True)
 
         time.sleep(2)
         
         
-        chosen_chords.reverse()
+        # chosen_chords.reverse()
 
-        for chord_idx, chord_vers in chosen_chords:
-            # get fundemental frequency of chosen key note
-            num_semitones = calc_num_semitones(chord_idx, chosen_mode) # num semitones from root to chord_idx location on fretboard
-            fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[3, 4] ) )
+        # for chord_idx, chord_vers in chosen_chords:
+        #     # get fundemental frequency of chosen key note
+        #     num_semitones = calc_num_semitones(chord_idx, chosen_mode) # num semitones from root to chord_idx location on fretboard
+        #     fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[3, 4] ) )
 
-            # determine version of chord from mode
-            play_len = random.randint(600, 800)
+        #     # determine version of chord from mode
+        #     play_len = random.randint(600, 800)
 
-            seed = random.randint(0, 10000)
-            play_chord(fun_freq, chord_vers, play_len, seed=seed)
+        #     seed = random.randint(0, 10000)
+        #     play_chord(fun_freq, chord_vers, play_len, seed=seed)
 
         pedal_tone.stop()
 
@@ -235,48 +236,88 @@ if __name__ == '__main__':
         print(f"The key was {chosen_key}")
 
         print(f'\n{MODE_NAMES[chosen_mode]} in {chosen_key} is')
+        print("**********************************************\n")
         for i in range(7):
             num_semitones = calc_num_semitones(i, chosen_mode)
             note = next_note(chosen_key, num_semitones)
-            print(f'({note}) {mode_mapping[chosen_mode][i]} {scale_mapping[chosen_mode][i]}')
+
+            mode = mode_mapping[chosen_mode][i]
+            scale = scale_mapping[chosen_mode][i]
+            roman_numeral = ROMAN_NUMERALS[i]
+            if mode == _MIN:
+                roman_numeral = roman_numeral.lower()
+            elif mode == _DIM:
+                roman_numeral = roman_numeral.lower()
+                roman_numeral = roman_numeral+"_d"
+            
+            print(f'({roman_numeral}) ({note} {mode})')
+            print(f'------- {scale} step -------\n')
 
         print("\n\n**********************************************\n\n\n")
 
 
-
-        time.sleep(2.5)
 
 
 
         # play up and down again quickly 
         pedal_tone.play(-1)
 
-        for chord_idx, chord_vers in chosen_chords:
+        # for chord_idx, chord_vers in chosen_chords:
+        #     # get fundemental frequency of chosen key note
+        #     num_semitones = calc_num_semitones(chord_idx, chosen_mode) # num semitones from root to chord_idx location on fretboard
+        #     fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[3, 4] ) )
+
+        #     # determine version of chord from mode
+        #     play_len = random.randint(100, 300)
+
+        #     seed = random.randint(0, 10000)
+        #     play_chord(fun_freq, chord_vers, play_len, seed=seed)
+
+        # time.sleep(2)
+
+
+        print(f"\nRandom Chord Progression was:")
+
+        # play random set
+        for chord_idx, chord_vers in _random_chords:
+            
+            
             # get fundemental frequency of chosen key note
             num_semitones = calc_num_semitones(chord_idx, chosen_mode) # num semitones from root to chord_idx location on fretboard
-            fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[3, 4] ) )
+            note = next_note(chosen_key, num_semitones)
+            fun_freq = random.choice( get_freqs(note, strings=[0, 1, 2, 3, 4, 5] ) )
 
             # determine version of chord from mode
-            play_len = random.randint(500, 600)
+            play_len = random.randint(350, 850)
 
-            seed = random.randint(0, 10000)
-            play_chord(fun_freq, chord_vers, play_len, seed=seed)
+            #seed = random.randint(0, 10000)
+            
+            # print to console
+            roman_numeral = ROMAN_NUMERALS[chord_idx]
+            if chord_vers == _MIN:
+                roman_numeral = roman_numeral.lower()
+            elif chord_vers == _DIM:
+                roman_numeral = roman_numeral.lower()
+                roman_numeral = roman_numeral+"_d"
+            print(f"{roman_numeral}: {note} {chord_vers}")
 
+            # play
+            play_chord(fun_freq, chord_vers, play_len, seed=seed, randomize=True)
+        
         time.sleep(2)
 
-  
-        chosen_chords.reverse()
+        # chosen_chords.reverse()
 
-        for chord_idx, chord_vers in chosen_chords:
-            # get fundemental frequency of chosen key note
-            num_semitones = calc_num_semitones(chord_idx, chosen_mode) # num semitones from root to chord_idx location on fretboard
-            fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[3, 4] ) )
+        # for chord_idx, chord_vers in chosen_chords:
+        #     # get fundemental frequency of chosen key note
+        #     num_semitones = calc_num_semitones(chord_idx, chosen_mode) # num semitones from root to chord_idx location on fretboard
+        #     fun_freq = random.choice( get_freqs( next_note(chosen_key, num_semitones), strings=[3, 4] ) )
 
-            # determine version of chord from mode
-            play_len = random.randint(500, 600)
+        #     # determine version of chord from mode
+        #     play_len = random.randint(100, 300)
 
-            seed = random.randint(0, 10000)
-            play_chord(fun_freq, chord_vers, play_len, seed=seed)
+        #     seed = random.randint(0, 10000)
+        #     play_chord(fun_freq, chord_vers, play_len, seed=seed)
 
 
         # stop pedal tone

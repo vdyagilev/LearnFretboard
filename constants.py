@@ -52,8 +52,8 @@ def get_note_color(name):
 
 
 # chord progressions
-_MAJ = "major"
-_MIN = "minor"
+_MAJ = "maj"
+_MIN = "min"
 _DIM = "dim"
 
 MAJOR_CHORDS = [_MAJ, _MIN, _MIN, _MAJ, _MAJ, _MIN, _DIM]
@@ -109,7 +109,7 @@ GUESS_OUTLIER_AVG = 3 # how many guesses are used to detect outlier entries
 RANDOM_NOT_DYNAMIC_PICKING = False
 
 # Only show Intervals with half-step distance less than 
-MAX_INTERVAL_DISTANCE = 100
+MAX_INTERVAL_DISTANCE = 20
 MAX_FRET_WIDTH = 4
 
 # If NO_WRONG = True then your mistakes won't be registerd
@@ -119,7 +119,7 @@ NO_WRONG = True
 HARMONIC_INTERVAL_PROB = 0.5
 
 # Shows only intervals listed here
-ACTIVE_INTERVALS = INTERVAL_NAMES
+ACTIVE_INTERVALS = INTERVAL_NAMES[1:]
 
 # If False then will not draw title and score texts
-DRAW_TITLE = True
+DRAW_TITLE = False

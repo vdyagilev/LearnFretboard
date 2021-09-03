@@ -101,7 +101,7 @@ class Note(GuessMaker):
         pygame.time.delay(millisecs)
         sound.stop()
 
-    def play_overtoned_sound(self, millisecs, n=14):
+    def play_overtoned_sound(self, millisecs, n=7):
        play_overtoned_note(self.frequency, millisecs, n)
 
     def __str__(self):

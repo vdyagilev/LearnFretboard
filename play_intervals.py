@@ -378,17 +378,17 @@ if __name__ == "__main__":
 
                     # play interval from a to b, then back from b to a
                     min_len, max_len = 250, 450
-                    random_play_len = lambda : random.randint(min_len, max_len)
+                    random_play_len = lambda : DISPLAY_ANSWER_TIME * random.randint(min_len, max_len)
                     # 50% to play melodic interval, 50% harmonic
                     rand_lens = [random_play_len() for _ in range(3)]
                     if random.random() > HARMONIC_INTERVAL_PROB:
                         # play melodic
-                        note_a.play_overtoned_sound(rand_lens[0], n=5)
+                        note_a.play_overtoned_sound(  rand_lens[0], n=5)
                         note_b.play_overtoned_sound(rand_lens[1], n=5)
-                        note_a.play_overtoned_sound(rand_lens[2], n=5)
+                       # note_a.play_overtoned_sound(rand_lens[2], n=5)
 
                     else:
-                        play_len = random.randint(500, 800)
+                        play_len = DISPLAY_ANSWER_TIME * random.randint(500, 800)
                         play_notes_harmonic_overtoned([note_a, note_b], play_len, n=4)
 
                     # # draw success or wrong text
