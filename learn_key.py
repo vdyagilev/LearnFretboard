@@ -113,7 +113,7 @@ if __name__ == '__main__':
            chosen_mode = random.randint(0, 6)
             
 
-        num_random_chords = 14
+        num_random_chords = 16
 
         mode_mapping = [MAJOR_CHORDS, DORIAN_CHORDS, PHRYGIAN_CHORDS, LYDIAN_CHORDS, MIXOLYDIAN_CHORDS, MINOR_CHORDS,LOCRIAN_CHORDS]
         scale_mapping = [MAJOR_SCALE, DORIAN_SCALE, PHRYGIAN_SCALE, LYDIAN_SCALE, MIXOLYDIAN_SCALE, 
@@ -124,7 +124,7 @@ if __name__ == '__main__':
         chosen_chords = [ (i, vers) for i, vers in enumerate(mode_mapping[chosen_mode]) ]
 
         # draw # num_chords randomly-samples from chosen_chords and replace them
-        _weights = [0.3, 0.1, 0.1, 0.15, 0.2, 0.1, 0.1] # weight root key most
+        _weights = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1] # equal weighting
         _random_chords = random.choices(chosen_chords, weights= _weights, k=num_random_chords)
 
         # add in root at end
@@ -180,8 +180,6 @@ if __name__ == '__main__':
 
         # time.sleep(2)
 
-        seed = random.randint(0, 10000)
-
         # play random set
         for chord_idx, chord_vers in _random_chords:
             # get fundemental frequency of chosen key note
@@ -191,7 +189,7 @@ if __name__ == '__main__':
             # determine version of chord from mode
             play_len = random.randint(350, 850)
 
-            
+            seed = random.randint(0, 10000)
             play_chord(fun_freq, chord_vers, play_len, seed=seed, randomize=True)
 
         time.sleep(2)
@@ -256,7 +254,7 @@ if __name__ == '__main__':
         print("\n\n**********************************************\n\n\n")
 
 
-
+        time.sleep(1)
 
 
         # play up and down again quickly 
@@ -290,7 +288,7 @@ if __name__ == '__main__':
             # determine version of chord from mode
             play_len = random.randint(350, 850)
 
-            #seed = random.randint(0, 10000)
+            seed = random.randint(0, 10000)
             
             # print to console
             roman_numeral = ROMAN_NUMERALS[chord_idx]
