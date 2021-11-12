@@ -359,8 +359,10 @@ if __name__ == "__main__":
                     pygame.draw.circle(screen, note_a.color, note_a_pos, NOTE_RADIUS)
                     pygame.draw.circle(screen, note_b.color, note_b_pos, NOTE_RADIUS)
                     
-                    draw_note_name(note_a, random_sharp_flat=True)
-                    draw_note_name(note_b, random_sharp_flat=True)
+                    if not JUST_COLORS:
+
+                        draw_note_name(note_a, random_sharp_flat=True)
+                        draw_note_name(note_b, random_sharp_flat=True)
 
                     # draw the interval name on the midpoint of the line
                     midp_x, midp_y = (note_a_pos[0] + note_b_pos[0])/2, (note_a_pos[1] + note_b_pos[1])/2
@@ -377,19 +379,25 @@ if __name__ == "__main__":
                     pygame.display.update()
 
                     # play interval from a to b, then back from b to a
-                    min_len, max_len = 250, 450
+                    min_len, max_len = 350, 550
                     random_play_len = lambda : DISPLAY_ANSWER_TIME * random.randint(min_len, max_len)
+
                     # 50% to play melodic interval, 50% harmonic
                     rand_lens = [random_play_len() for _ in range(3)]
                     if random.random() > HARMONIC_INTERVAL_PROB:
+                        n = 1
                         # play melodic
-                        note_a.play_overtoned_sound(  rand_lens[0], n=5)
-                        note_b.play_overtoned_sound(rand_lens[1], n=5)
-                       # note_a.play_overtoned_sound(rand_lens[2], n=5)
+                        note_a.play_overtoned_sound(  rand_lens[0], n=n)
+                        
+                        time.sleep(0.2)
+
+                        note_b.play_overtoned_sound(rand_lens[1], n=n)
+                       # note_a.play_overtoned_sound(rand_lens[2], n=n)
 
                     else:
+                        n=1
                         play_len = DISPLAY_ANSWER_TIME * random.randint(500, 800)
-                        play_notes_harmonic_overtoned([note_a, note_b], play_len, n=4)
+                        play_notes_harmonic_overtoned([note_a, note_b], play_len, n=n)
 
                     # # draw success or wrong text
                     # screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))

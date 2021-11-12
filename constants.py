@@ -44,6 +44,11 @@ NOTE_POS = {
 INTERVAL_NAMES = ["Unison", "Minor 2nd", "Major 2nd", "Minor 3rd", "Major 3rd", "Perfect 4th", "Tritone", "Perfect 5th", "Minor 6th", "Major 6th", "Minor 7th", "Major 7th", "Octave"]
 SHORT_INTERVAL_NAMES = ["U", "m2", "M2", 'm3', 'M3', 'P4', 'T', 'P5', 'm6', 'M6', 'm7', 'M7', 'O']
 
+STRING_NAMES = ["E", "A", "D", "G", "B", "e"]
+
+MODE_NAMES = ['major', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'minor', 'locrian']
+ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII"]
+
 def get_note_color(name):
     # find the color with the / in the dict
     for key in COLORS.keys():
@@ -58,25 +63,36 @@ _DIM = "dim"
 
 MAJOR_CHORDS = [_MAJ, _MIN, _MIN, _MAJ, _MAJ, _MIN, _DIM]
 MAJOR_SCALE = ['W', 'W', 'H', 'W', 'W', 'W', 'H']
+MAJOR_CHORD_WEIGHTS = [1, 1/2, 1, 1/2, 1, 1/2, 1/4]
 
 # sequence dorian -> locrian mode chords by shifting major chords by one each time
 DORIAN_CHORDS = MAJOR_CHORDS[1:] + MAJOR_CHORDS[:1]
 DORIAN_SCALE = MAJOR_SCALE[1:] + MAJOR_SCALE[:1]
+DORIAN_CHORD_WEIGHTS = [1, 1, 1/2, 1, 1/2, 1/4, 1/2]
 
 PHRYGIAN_CHORDS = MAJOR_CHORDS[2:] + MAJOR_CHORDS[:2]
 PHRYGIAN_SCALE = MAJOR_SCALE[2:] + MAJOR_SCALE[:2]
+PHRYGIAN_CHORD_WEIGHTS = [1, 1, 1/2, 1/2, 1/4, 1/2, 1]
 
 LYDIAN_CHORDS = MAJOR_CHORDS[3:] + MAJOR_CHORDS[:3]
 LYDIAN_SCALE = MAJOR_SCALE[3:] + MAJOR_SCALE[:3]
+LYDIAN_CHORD_WEIGHTS = [1, 1, 1/2, 1/4, 1/2, 1/2, 1]
 
 MIXOLYDIAN_CHORDS = MAJOR_CHORDS[4:] + MAJOR_CHORDS[:4]
 MIXOLYDIAN_SCALE = MAJOR_SCALE[4:] + MAJOR_SCALE[:4]
+MIXOLYDIAN_CHORD_WEIGHTS = [1, 1/2, 1/4, 1/2, 1, 1/2, 1]
 
 MINOR_CHORDS = MAJOR_CHORDS[5:] + MAJOR_CHORDS[:5]
 MINOR_SCALE = MAJOR_SCALE[5:] + MAJOR_SCALE[:5]
+MINOR_CHORD_WEIGHTS = [1, 1/4, 1/2, 1, 1/2, 1, 1/2,]
 
 LOCRIAN_CHORDS = MAJOR_CHORDS[6:] + MAJOR_CHORDS[:6]
 LOCRIAN_SCALE = MAJOR_SCALE[6:] + MAJOR_SCALE[:6]
+LOCRIAN_CHORD_WEIGHTS = [1, 1/2, 1, 1/2, 1, 1/2, 1/2]
+
+MODE_MAP = [MAJOR_CHORDS, DORIAN_CHORDS, PHRYGIAN_CHORDS, LYDIAN_CHORDS, MIXOLYDIAN_CHORDS, MINOR_CHORDS,LOCRIAN_CHORDS]
+SCALE_MAP = [MAJOR_SCALE, DORIAN_SCALE, PHRYGIAN_SCALE, LYDIAN_SCALE, MIXOLYDIAN_SCALE, 
+                            MINOR_SCALE, LOCRIAN_SCALE]
 
 # playing tone
 NOTE_FREQ = {
@@ -109,8 +125,8 @@ GUESS_OUTLIER_AVG = 3 # how many guesses are used to detect outlier entries
 RANDOM_NOT_DYNAMIC_PICKING = False
 
 # Only show Intervals with half-step distance less than 
-MAX_INTERVAL_DISTANCE = 20
-MAX_FRET_WIDTH = 4
+MAX_INTERVAL_DISTANCE = 100
+MAX_FRET_WIDTH = 5 #40
 
 # If NO_WRONG = True then your mistakes won't be registerd
 NO_WRONG = True
@@ -123,3 +139,6 @@ ACTIVE_INTERVALS = INTERVAL_NAMES[1:]
 
 # If False then will not draw title and score texts
 DRAW_TITLE = False
+
+# If true xoesnt draw note labels
+JUST_COLORS = True

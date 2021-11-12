@@ -243,3 +243,27 @@ def get_freqs(note_name, strings=[0, 1, 2, 3, 4, 5]):
                     freqs.append(freq)
     
     return freqs
+
+
+def calc_num_semitones(chord_idx, chosen_mode):
+    scale = SCALE_MAP[chosen_mode]
+
+    semitones = 0
+    curr_scale_step = 0
+    for step in scale:
+        if curr_scale_step == chord_idx:
+            # count how many semitones from root of chosen mode to the chord at idx
+            # so we break when we get to its idx
+            break
+
+        if step == "H":
+            semitones += 1
+        elif step == "W":
+            semitones += 2
+        else:
+            print(f'step is not H or W. step={step}')
+            exit(1)
+
+        curr_scale_step += 1
+    
+    return semitones

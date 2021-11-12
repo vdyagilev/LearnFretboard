@@ -137,6 +137,7 @@ if __name__ == "__main__":
         resize_width_ratio = WINDOW_WIDTH / fretboard_image.get_width()
 
         fretboard_image_height, fretboard_image_width = int(min(resize_width_ratio * fretboard_image.get_height() -2* top_padding, int(WINDOW_HEIGHT*(4/5) -  1 * top_padding)))    , int(WINDOW_WIDTH -  1 * side_padding)
+       
         fretboard_image = pygame.transform.scale(fretboard_image, (fretboard_image_width, fretboard_image_height))
 
         # draw freboard skeleton image
@@ -174,11 +175,13 @@ if __name__ == "__main__":
             else:
                 text_color = WHITE
             
-            # render note names, sharps/flats are larger so shift them differently
-            if "/" in note_name:
-                screen.blit(BUTTON_FONT.render(note_name, True, text_color), (coord[0]-18, coord[1]-7))
-            else:
-                screen.blit(BUTTON_FONT.render(note_name, True, text_color), (coord[0]-5, coord[1]-7))
+            if not JUST_COLORS:
+
+                # render note names, sharps/flats are larger so shift them differently
+                if "/" in note_name:
+                    screen.blit(BUTTON_FONT.render(note_name, True, text_color), (coord[0]-18, coord[1]-7))
+                else:
+                    screen.blit(BUTTON_FONT.render(note_name, True, text_color), (coord[0]-5, coord[1]-7))
 
         # draw note to predict
         start_time = time.time()
@@ -251,7 +254,8 @@ if __name__ == "__main__":
             pygame.draw.circle(screen, last_note.color, last_note_pos, NOTE_RADIUS)
             pygame.draw.circle(screen, (149,165,166), predict_note_pos, NOTE_RADIUS)
 
-            draw_note_name(last_note, random_sharp_flat=True)
+            if not JUST_COLORS:
+                draw_note_name(last_note, random_sharp_flat=True)
         
         else:
             # draw highlight around predict_note
@@ -326,8 +330,10 @@ if __name__ == "__main__":
 
                     # reveal predict note true color, colour circle and draw text
                     pygame.draw.circle(screen, predict_note.color, predict_note_pos, NOTE_RADIUS)
-                    # if note is a sharp/flat, 50% chance to draw either one of the two names 
-                    draw_note_name(predict_note, random_sharp_flat=True)
+                    
+                    if not JUST_COLORS:
+                        # if note is a sharp/flat, 50% chance to draw either one of the two names 
+                        draw_note_name(predict_note, random_sharp_flat=True)
 
                     # # draw the interval name on the midpoint of the line
                     # if last_note:
@@ -344,7 +350,7 @@ if __name__ == "__main__":
                     min_play, max_play = 400, 900
                     random_play_len = lambda : DISPLAY_ANSWER_TIME *  random.randint(min_play, max_play)
                     play_len = random_play_len()
-                    predict_note.play_overtoned_sound(play_len)
+                    predict_note.play_overtoned_sound(play_len, n=5)
 
                     # # draw success or wrong text
                     # screen.blit(success_text, (WINDOW_WIDTH/2 - 55, WINDOW_HEIGHT - menu_height - (side_padding/2)))
